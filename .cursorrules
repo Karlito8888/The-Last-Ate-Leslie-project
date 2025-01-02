@@ -1,0 +1,80 @@
+🎯 PROMPT : Backend Minimaliste TypeScript/Express/MongoDB
+
+🎨 Philosophie KISS
+
+    - Code simple, clair et fonctionnel.
+    - Priorité à la maintenabilité et à l'efficacité.
+    - Pas de sur-ingénierie : chaque fichier doit avoir une responsabilité unique et précise.
+
+🏗 Architecture MVC
+
+    src/
+    ├── models/        # Schémas Mongoose simples.
+    ├── controllers/   # Logique métier élémentaire.
+    ├── routes/        # Routes Express directes.
+    ├── middleware/    # Middleware d'auth et erreurs.
+    └── config/        # Configuration centralisée (DB, JWT, env).
+
+🛠 Stack Technique
+
+    - Backend : TypeScript, Express.js.
+    - Database : MongoDB avec Mongoose.
+    - Sécurité : JWT, Helmet, CORS.
+    - Upload : Multer pour fichiers simples (images/documents).
+    - Email : Nodemailer pour la notification de formulaires.
+
+🔑 Fonctionnalités
+    1. Auth
+
+        - Inscription et connexion (JWT uniquement).
+        - Reset password avec token temporaire.
+        - Rôles : User et Admin via un champ simple dans le modèle.
+
+    2. Gestion des évènements
+
+        - CRUD basique des évènements.
+        - Upload d'images pour les événements (max 2 Mo).
+
+    3. Contact
+
+        - Formulaire basique (nom, email, message).
+        - Envoi de notification par email via Nodemailer.
+
+📏 Standards de Code
+    Simplicité
+
+        - Une fonction = une tâche.
+        - Noms explicites.
+        - Pas plus de 20-30 lignes par fonction.
+        - Pas d'abstraction inutile.
+
+    TypeScript
+
+        - Types explicites (interfaces simples, pas de classes inutiles).
+        - Mode strict activé.
+
+    Sécurité
+
+        - Headers sécurisés via Helmet.
+        - Validation d'entrées avec express-validator.
+        - Sanitization pour prévenir les injections MongoDB.
+
+⚡️ Performance
+
+        - Pagination par défaut sur les listes (exemple : /events).
+        - Upload limité à 2 Mo.
+        - Indexation MongoDB si nécessaire.
+
+🔒 Sécurité
+
+        - CORS configuré.
+        - Gestion centralisée des erreurs.
+        - Validation stricte des données reçues.
+
+📚 Documentation
+
+    README basique pour expliquer les routes.
+        - Swagger : Génération automatique uniquement en mode dev.
+        - Types bien documentés pour faciliter la prise en main.
+
+

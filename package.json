@@ -1,0 +1,23 @@
+{
+  "name": "ate-leslie-project",
+  "version": "1.0.0",
+  "description": "Projet événementiel minimaliste suivant la philosophie KISS",
+  "scripts": {
+    "start": "concurrently \"npm run backend:prod\" \"npm run frontend:prod\"",
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "backend:dev": "cd backend && npm run dev",
+    "frontend:dev": "cd frontend && npm start",
+    "backend:prod": "cd backend && npm run build && npm start",
+    "frontend:prod": "cd frontend && npm run build && serve -s build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "test": "cd backend && npm test && cd ../frontend && npm test",
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+  },
+  "keywords": ["mern", "typescript", "events"],
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "serve": "^14.2.1"
+  }
+}
