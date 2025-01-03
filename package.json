@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Projet événementiel minimaliste suivant la philosophie KISS",
   "scripts": {
-    "start": "concurrently \"npm run backend:prod\" \"npm run frontend:prod\"",
+    "start": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
     "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
     "backend:dev": "cd backend && npm run dev",
-    "frontend:dev": "cd frontend && npm start",
+    "frontend:dev": "cd frontend && npm run dev",
     "backend:prod": "cd backend && npm run build && npm start",
     "frontend:prod": "cd frontend && npm run build && serve -s build",
     "build": "npm run build:backend && npm run build:frontend",

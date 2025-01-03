@@ -5,6 +5,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
+import adminRoutes from './routes/adminRoutes';
+import contactRoutes from './routes/contactRoutes';
 
 // Configuration des variables d'environnement
 dotenv.config();
@@ -20,6 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Route de base
 app.get('/', (_req, res) => {

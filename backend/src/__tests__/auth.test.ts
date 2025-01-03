@@ -11,6 +11,13 @@ const validUserData = {
   password: 'ValidPass123!'
 };
 
+const validAdminData = {
+  username: 'admin',
+  email: 'admin@example.com',
+  password: 'AdminPass123!',
+  role: 'admin'
+};
+
 describe('Auth Endpoints', () => {
   beforeAll(async () => {
     await mongoose.connect(config.mongodb.uri);
@@ -165,6 +172,39 @@ describe('Auth Endpoints', () => {
       expect(res.status).toBe(400);
       expect(res.body.success).toBe(false);
       expect(res.body.message).toBe('Email et mot de passe requis');
+    });
+
+    it('should return user role in login response', async () => {
+      // Create an admin user first
+      await User.create(validAdminData);
+
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: validAdminData.email,
+          password: validAdminData.password
+        });
+
+      const body = res.body as ApiResponse<AuthResponse>;
+
+      expect(res.status).toBe(200);
+      expect(body.success).toBe(true);
+      expect(body.data?.user.role).toBe('admin');
+    });
+
+    it('should return default user role for regular users', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: validUserData.email,
+          password: validUserData.password
+        });
+
+      const body = res.body as ApiResponse<AuthResponse>;
+
+      expect(res.status).toBe(200);
+      expect(body.success).toBe(true);
+      expect(body.data?.user.role).toBe('user');
     });
   });
 }); 

@@ -1,0 +1,253 @@
+@use '../../styles/globals/variables' as *;
+
+.loginContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0rem, -2.5rem + 8vw, 2rem);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100vh;
+    background: 
+      linear-gradient(
+        to right,
+        rgba($color-white, 1) 0%,
+        rgba($color-white, 0.95) 20%,
+        rgba($color-white, 0.5) 100%
+      ),
+      image-set(
+        url('../../assets/images/login/hands-20333_1920.webp') type('image/webp'),
+        url('../../assets/images/login/hands-20333_1920.jpg') type('image/jpeg')
+      ) right center/cover no-repeat;
+    z-index: -1;
+    transition: all 0.3s ease-in-out;
+    
+    @media (max-width: 1280px) {
+      width: 60%;
+      background: 
+        linear-gradient(
+          to right,
+          rgba($color-white, 1) 0%,
+          rgba($color-white, 0.9) 30%,
+          rgba($color-white, 0.6) 100%
+        ),
+        image-set(
+          url('../../assets/images/login/hands-20333_1280.webp') type('image/webp'),
+          url('../../assets/images/login/hands-20333_1280.jpg') type('image/jpeg')
+        ) right center/cover no-repeat;
+    }
+    
+    @media (max-width: 640px) {
+      width: 100%;
+      background: 
+        linear-gradient(
+          135deg,
+          rgba($color-white, 0.98) 0%,
+          rgba($color-white, 0.95) 25%,
+          rgba($color-white, 0.85) 50%,
+          rgba($color-white, 0.75) 75%,
+          rgba($color-white, 0.65) 100%
+        ),
+        image-set(
+          url('../../assets/images/login/hands-20333_640.webp') type('image/webp'),
+          url('../../assets/images/login/hands-20333_640.jpg') type('image/jpeg')
+        ) center/cover no-repeat;
+      opacity: 1;
+      
+      @media (prefers-reduced-motion: no-preference) {
+        transform: translateZ(0);
+        will-change: transform;
+        animation: subtleParallax 20s ease-in-out infinite alternate;
+      }
+    }
+  }
+}
+
+.loginForm {
+  width: 100%;
+  max-width: clamp(20rem, 15rem + 20vw, 30rem);
+  padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  background: rgba($color-black, 0.8);
+  border-radius: $border-radius-lg;
+  border: 1px solid rgba($color-primary, 0.1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba($color-black, 0.2);
+  animation: fadeInUp 0.8s ease-out forwards;
+
+  h2 {
+    color: $color-white;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: clamp(1.2rem, 0.2rem + 3.2vw, 2rem);
+    letter-spacing: 2px;
+  }
+
+  .formGroup {
+    margin-bottom: 1.5rem;
+    position: relative;
+
+    input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: rgba($color-white, 0.05);
+      border: 1px solid rgba($color-white, 0.1);
+      border-radius: $border-radius-sm;
+      color: $color-white;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+
+      &::placeholder {
+        color: rgba($color-white, 0.5);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: rgba($color-primary, 0.5);
+        background: rgba($color-white, 0.08);
+      }
+
+      &.error {
+        border-color: $color-error-border;
+        animation: shake 0.5s ease-in-out;
+      }
+    }
+
+    .errorMessage {
+      position: absolute;
+      left: 0;
+      bottom: -1.2rem;
+      color: $color-error-text;
+      font-size: 0.8rem;
+      opacity: 0.9;
+      background: $color-error-bg;
+      border: 1px solid $color-error-border;
+      padding: 0.5rem;
+      border-radius: $border-radius-sm;
+    }
+
+    .passwordInputWrapper {
+      position: relative;
+      width: 100%;
+
+      input {
+        width: 100%;
+        padding-right: 40px;
+      }
+
+      .togglePassword {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        color: #666;
+        
+        &:hover {
+          color: #333;
+        }
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
+
+  .apiError {
+    margin: 1rem 0;
+    padding: 0.8rem;
+    background: $color-error-bg;
+    border: 1px solid $color-error-border;
+    border-radius: $border-radius-sm;
+    color: $color-error-text;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  .submitButton {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 1rem;
+    background: $color-primary;
+    color: $color-white;
+    border: none;
+    border-radius: $border-radius-sm;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+
+    &:hover:not(:disabled) {
+      background: $color-primary-dark;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+
+  .registerLink {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: rgba($color-white, 0.7);
+    font-size: 0.8rem;
+
+    span {
+      color: $color-primary;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      margin-left: 10px;
+
+      &:hover {
+        color: $color-primary-dark;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes subtleParallax {
+  from {
+    background-position: center;
+  }
+  to {
+    background-position: center 10%;
+  }
+}

@@ -1,66 +1,59 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { User, IUser } from '../models/User';
+import { User } from '../models/User';
 import { JWT_CONFIG } from '../config/jwt';
 
-type AuthUser = Omit<IUser, 'password' | 'comparePassword'>;
-
+// Déclaration pour étendre Request
 declare global {
   namespace Express {
     interface Request {
-      user: AuthUser;
+      user: {
+        id: string;
+      };
     }
   }
 }
 
-export const protect = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void | Response> => {
+// Middleware d'authentification
+export const protect = (req: Request, res: Response, next: NextFunction): Response | void => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
+    
     if (!token) {
-      return res.status(401).json({
+      return res.status(401).json({ 
         success: false,
         message: 'Non autorisé'
       });
     }
 
-    const data = jwt.verify(token, JWT_CONFIG.secret) as any;
-    const user = await User.findById(data.userId).select('-password').lean();
-    
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Non autorisé'
-      });
-    }
-
-    req.user = {
-      ...user,
-      id: user._id.toString()
-    };
-    
-    next();
-  } catch {
-    return res.status(401).json({
+    const decoded = jwt.verify(token, JWT_CONFIG.secret) as { userId: string };
+    req.user = { id: decoded.userId };
+    return next();
+  } catch (error) {
+    return res.status(401).json({ 
       success: false,
       message: 'Non autorisé'
     });
   }
 };
 
-export const restrictTo = (...roles: ('user' | 'admin')[]) => (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void | Response => {
-  if (!roles.includes(req.user.role || 'user')) {
-    return res.status(403).json({
+// Middleware de vérification admin
+export const isAdmin = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+  try {
+    const user = await User.findById(req.user.id);
+    
+    if (!user?.role || user.role !== 'admin') {
+      return res.status(403).json({ 
+        success: false,
+        message: 'Accès non autorisé'
+      });
+    }
+
+    return next();
+  } catch (error) {
+    return res.status(500).json({ 
       success: false,
-      message: 'Non autorisé'
+      message: 'Erreur serveur'
     });
   }
-  next();
 }; 

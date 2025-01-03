@@ -36,9 +36,9 @@ export const getProfile = async (req: Request, res: Response): Promise<Response>
     const user = await User.findById(req.user.id).select('-password');
     if (!user) return sendError(res, 404, 'Utilisateur non trouvé');
     
-    return sendSuccess(res, formatUserResponse(user), 'Profil récupéré avec succès');
+    return sendSuccess(res, formatUserResponse(user));
   } catch {
-    return sendError(res, 500, 'Erreur lors de la récupération du profil');
+    return sendError(res, 500, 'Erreur serveur');
   }
 };
 

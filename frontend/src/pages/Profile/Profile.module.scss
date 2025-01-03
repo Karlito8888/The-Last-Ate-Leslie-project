@@ -1,0 +1,465 @@
+@use "../../styles/globals/variables" as *;
+
+.profileContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-8;
+}
+
+.profileHeader {
+  text-align: center;
+  margin-bottom: $spacing-8 * 1.5;
+
+  h1 {
+    font-size: clamp($font-size-2xl, 1.3rem + 2vw, $font-size-3xl);
+    color: $color-primary;
+    margin-bottom: $spacing-2;
+  }
+
+  p {
+    color: rgba($color-black, 0.7);
+    font-size: clamp($font-size-base, 0.9rem + 0.5vw, $font-size-lg);
+  }
+}
+
+.tabsNav {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-4;
+  margin-bottom: $spacing-8;
+  flex-wrap: wrap;
+
+  button {
+    padding: $spacing-3 $spacing-6;
+    border: none;
+    background: transparent;
+    color: rgba($color-black, 0.7);
+    font-size: $font-size-base;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: $color-primary;
+    }
+
+    &.active {
+      color: $color-primary;
+      border-bottom-color: $color-primary;
+    }
+  }
+}
+
+.content {
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-8;
+  box-shadow: $shadow-lg;
+
+  h2 {
+    color: $color-primary;
+    font-size: $font-size-2xl;
+    margin-bottom: $spacing-8;
+  }
+}
+
+.emptyState {
+  text-align: center;
+  color: rgba($color-black, 0.5);
+  padding: $spacing-8 * 1.5 0;
+  font-style: italic;
+}
+
+// Styles communs pour les cartes
+%card {
+  background: rgba($color-white, 0.02);
+  border: 1px solid rgba($color-primary, 0.1);
+  border-radius: $border-radius-lg;
+  padding: $spacing-6;
+  margin-bottom: $spacing-4;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+
+  h3 {
+    color: $color-primary;
+    font-size: $font-size-lg;
+    margin-bottom: $spacing-4;
+  }
+
+  p {
+    color: rgba($color-black, 0.7);
+    margin-bottom: $spacing-2;
+    font-size: $font-size-base;
+  }
+}
+
+// Styles spécifiques pour chaque section
+.quoteCard {
+  @extend %card;
+}
+
+.projectCard {
+  @extend %card;
+}
+
+.documentCard {
+  @extend %card;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .downloadButton {
+    background: $color-primary;
+    color: $color-white;
+    padding: $spacing-2 $spacing-4;
+    border-radius: $border-radius-sm;
+    text-decoration: none;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: $color-primary-dark;
+    }
+  }
+}
+
+.appointmentCard {
+  @extend %card;
+}
+
+.newAppointmentButton {
+  background: $color-primary;
+  color: $color-white;
+  border: none;
+  padding: $spacing-4 $spacing-8;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  margin-bottom: $spacing-8;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #1a5f7a;
+  }
+}
+
+.messagesSection {
+  .messagesList {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: $spacing-4;
+    padding-right: $spacing-4;
+  }
+
+  .messageCard {
+    @extend %card;
+    margin-bottom: $spacing-4;
+
+    .messageHeader {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: $spacing-2;
+      font-size: $font-size-sm;
+      color: rgba($color-black, 0.6);
+    }
+  }
+
+  .messageInput {
+    display: flex;
+    gap: $spacing-4;
+    margin-top: $spacing-4;
+
+    input {
+      flex: 1;
+      padding: $spacing-3;
+      border: 1px solid rgba($color-primary, 0.2);
+      border-radius: $border-radius-sm;
+      font-size: $font-size-base;
+
+      &:focus {
+        outline: none;
+        border-color: $color-primary;
+      }
+    }
+
+    button {
+      background: $color-primary;
+      color: $color-white;
+      border: none;
+      padding: 0 $spacing-6;
+      border-radius: $border-radius-sm;
+      cursor: pointer;
+      transition: background 0.3s ease;
+
+      &:hover {
+        background: $color-primary-dark;
+      }
+    }
+  }
+}
+
+.infoSection {
+  background: rgba($color-white, 0.95);
+  padding: clamp(1rem, 3vw, 2rem);
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow-md;
+  
+  @media (max-width: 480px) {
+    padding: 1rem;
+    margin: 0.5rem;
+    border-radius: $border-radius-sm;
+  }
+
+  h2 {
+    color: $color-primary;
+    margin-bottom: 2rem;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    
+    @media (max-width: 480px) {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+  }
+}
+
+.infoForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  @media (max-width: 480px) {
+    gap: 1rem;
+  }
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+
+  @media (max-width: 480px) {
+    margin-bottom: 0.75rem;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: $color-text-dark;
+    font-size: 0.9rem;
+
+    @media (max-width: 480px) {
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  input, select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid $color-border;
+    border-radius: $border-radius-sm;
+    font-size: 1rem;
+
+    @media (max-width: 480px) {
+      padding: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    &::placeholder {
+      color: $color-text-light;
+      font-size: 0.9rem;
+
+      @media (max-width: 480px) {
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
+
+.formRow {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .formGroup {
+    flex: 1;
+    margin-bottom: 0;
+  }
+}
+
+.nameTitle, .addressTitle {
+  color: $color-primary;
+  margin: 1.5rem 0 1rem;
+  font-size: 1.2rem;
+  border-bottom: 2px solid rgba($color-primary, 0.1);
+  padding-bottom: 0.5rem;
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+    margin: 1rem 0 0.75rem;
+    text-align: center;
+  }
+}
+
+.addressFields {
+  background: rgba($color-primary, 0.02);
+  padding: 1.5rem;
+  border-radius: $border-radius-md;
+  border: 1px solid rgba($color-primary, 0.1);
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+    margin: 0 -0.5rem;
+    border-radius: $border-radius-sm;
+  }
+}
+
+.dateInputWrapper {
+  position: relative;
+
+  @media (max-width: 480px) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .calendarInput {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 2.5rem;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+
+    @media (max-width: 480px) {
+      position: relative;
+      width: 100%;
+      height: 2.5rem;
+      opacity: 1;
+    }
+  }
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: $color-text-dark;
+  cursor: pointer;
+
+  @media (max-width: 480px) {
+    font-size: 0.85rem;
+    margin: 1rem 0;
+  }
+
+  input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.5rem;
+  }
+}
+
+.submitButton {
+  background: $color-primary;
+  color: $color-white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: $border-radius-sm;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 1rem;
+
+  @media (max-width: 480px) {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+  }
+
+  &:hover {
+    background: #1a5f7a;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.withSeparator {
+  position: relative;
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+
+  @media (max-width: 480px) {
+    padding-top: 1rem;
+    margin-top: 1rem;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba($color-primary, 0.1);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .profileContainer {
+    padding: $spacing-4;
+  }
+
+  .tabsNav {
+    gap: $spacing-2;
+
+    button {
+      padding: $spacing-2 $spacing-4;
+      font-size: $font-size-sm;
+    }
+  }
+
+  .content {
+    padding: $spacing-4;
+  }
+
+  .messageInput {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+      padding: $spacing-3;
+    }
+  }
+} 
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: $font-size-lg;
+  color: $color-primary;
+}
+
+.error {
+  background-color: $color-error-bg;
+  color: $color-error-text;
+  padding: $spacing-4;
+  margin-bottom: $spacing-4;
+  border-radius: $border-radius-sm;
+  border: 1px solid $color-error-border;
+  text-align: center;
+} 
