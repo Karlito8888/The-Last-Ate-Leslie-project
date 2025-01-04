@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import React, { useState } from 'react';
+import { Document, Page } from 'react-pdf';
+import { pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 import styles from './Services.module.scss';
 import kiosk from '../../assets/images/services/acai-kiosk-small.jpg';
 import exhibition from '../../assets/images/services/exhibition.jpg';
@@ -83,15 +86,13 @@ const catalogs: CatalogInfo[] = [
   }
 ];
 
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+
 const Services: React.FC = () => {
   const [selectedCatalog, setSelectedCatalog] = useState<CatalogInfo | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [scale, setScale] = useState(1);
-
-  useEffect(() => {
-    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-  }, []);
 
   const handleCatalogClick = (catalog: CatalogInfo, e: React.MouseEvent) => {
     e.preventDefault();

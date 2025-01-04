@@ -62,13 +62,6 @@ export const authApi = createExtendedApi({
         body: { newPassword },
       }),
     }),
-    logout: builder.mutation<void, void>({
-      query: () => ({
-        url: '/auth/logout',
-        method: 'POST',
-      }),
-      invalidatesTags: ['Auth'],
-    }),
   }),
 });
 
@@ -77,5 +70,4 @@ export const {
   useRegisterMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
-  useLogoutMutation,
 } = authApi; 

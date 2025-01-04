@@ -4,22 +4,24 @@ import { useDispatch } from 'react-redux'
 import { useRegisterMutation, useLoginMutation } from '../../store/api/authApi'
 import { setCredentials } from '../../store/slices/authSlice'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import styles from './RegisterForm.module.scss'
 
-const RULES = {
-  name: { min: 3, max: 50 },
-  pass: { min: 6 }
-}
+const USERNAME_REGEX = /^[a-zA-Z0-9_-]+$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[0-9]).{8,}$/;
 
-const EMAIL = /^[^@]+@[^@]+\.[a-z]{2,}$/i
-const PHONE = /^\+?[\d\s-]{10,}$/
+const RULES = {
+  username: { min: 3, max: 50 },
+  password: { min: 8 }
+}
 
 interface FormData {
   username: string
   email: string
   password: string
   confirmPassword: string
-  phoneNumber: string
   newsletterSubscribed: boolean
 }
 
@@ -28,7 +30,11 @@ interface ValidationErrors {
   email?: string
   password?: string
   confirmPassword?: string
-  phoneNumber?: string
+}
+
+interface ValidationState {
+  errors: ValidationErrors;
+  focusedField: string | null;
 }
 
 const RegisterForm: React.FC = () => {
@@ -44,11 +50,34 @@ const RegisterForm: React.FC = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    phoneNumber: '',
     newsletterSubscribed: true
   })
   
-  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({})
+  const [validationState, setValidationState] = useState<ValidationState>({
+    errors: {},
+    focusedField: null
+  });
+
+  const helpMessages = {
+    username: '3-50 characters',
+    email: 'Enter a valid email address',
+    password: 'Min. 8 chars, 1 uppercase, 1 special char',
+    confirmPassword: 'Must match password'
+  };
+
+  const handleFocus = (fieldName: string) => {
+    setValidationState(prev => ({
+      ...prev,
+      focusedField: fieldName
+    }));
+  };
+
+  const handleBlur = () => {
+    setValidationState(prev => ({
+      ...prev,
+      focusedField: null
+    }));
+  };
 
   const validateForm = (): boolean => {
     const errors: ValidationErrors = {}
@@ -56,33 +85,34 @@ const RegisterForm: React.FC = () => {
     if (!formData.username.trim()) {
       errors.username = 'Username is required'
     } else if (
-      formData.username.length < RULES.name.min ||
-      formData.username.length > RULES.name.max
+      formData.username.length < RULES.username.min ||
+      formData.username.length > RULES.username.max
     ) {
-      errors.username = `Username must be between ${RULES.name.min} and ${RULES.name.max} characters`
+      errors.username = `Username must be between ${RULES.username.min} and ${RULES.username.max} characters`
+    } else if (!USERNAME_REGEX.test(formData.username)) {
+      errors.username = 'Username must contain only letters, numbers, dashes and underscores'
     }
     
     if (!formData.email.trim()) {
       errors.email = 'Email is required'
-    } else if (!EMAIL.test(formData.email)) {
-      errors.email = 'Please provide a valid email address'
+    } else if (!EMAIL_REGEX.test(formData.email)) {
+      errors.email = 'Invalid email format'
     }
     
     if (!formData.password) {
       errors.password = 'Password is required'
-    } else if (formData.password.length < RULES.pass.min) {
-      errors.password = `Password must be at least ${RULES.pass.min} characters`
+    } else if (!PASSWORD_REGEX.test(formData.password)) {
+      errors.password = 'Password must contain at least 8 characters, one uppercase letter and one special character'
     }
     
     if (formData.password !== formData.confirmPassword) {
       errors.confirmPassword = 'Passwords do not match'
     }
 
-    if (formData.phoneNumber && !PHONE.test(formData.phoneNumber)) {
-      errors.phoneNumber = 'Please provide a valid phone number'
-    }
-
-    setValidationErrors(errors)
+    setValidationState(prev => ({
+      ...prev,
+      errors
+    }));
     return Object.keys(errors).length === 0
   }
 
@@ -103,8 +133,7 @@ const RegisterForm: React.FC = () => {
       username: formData.username,
       email: formData.email,
       password: formData.password,
-      ...(formData.phoneNumber && { mobileNumber: formData.phoneNumber }),
-      newsletterSubscribed: formData.newsletterSubscribed
+      newsletter: formData.newsletterSubscribed
     }
 
     try {
@@ -117,9 +146,11 @@ const RegisterForm: React.FC = () => {
       }).unwrap()
 
       dispatch(setCredentials(loginResponse.data))
-      navigate('/')
+      toast.success('Account created successfully! Welcome to your profile.')
+      navigate('/profile')
     } catch (err) {
       console.error('Registration/Login failed:', err)
+      toast.error('Registration failed. Please try again.')
     }
   }
 
@@ -134,11 +165,21 @@ const RegisterForm: React.FC = () => {
             name="username"
             value={formData.username}
             onChange={handleChange}
+            onFocus={() => handleFocus('username')}
+            onBlur={handleBlur}
             placeholder="Username"
-            className={validationErrors.username ? styles.error : ''}
+            className={validationState.focusedField === 'username' && !validationState.errors.username ? styles.info : validationState.errors.username ? styles.error : ''}
           />
-          {validationErrors.username && (
-            <span className={styles.errorMessage}>{validationErrors.username}</span>
+          <label className={styles.floatingLabel}>Username</label>
+          {validationState.focusedField === 'username' && !validationState.errors.username && (
+            <span className={`${styles.errorMessage} ${styles.info}`}>
+              {helpMessages.username}
+            </span>
+          )}
+          {validationState.errors.username && (
+            <span className={`${styles.errorMessage} ${styles.error}`}>
+              {validationState.errors.username}
+            </span>
           )}
         </div>
 
@@ -148,25 +189,21 @@ const RegisterForm: React.FC = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
+            onFocus={() => handleFocus('email')}
+            onBlur={handleBlur}
             placeholder="Email"
-            className={validationErrors.email ? styles.error : ''}
+            className={validationState.focusedField === 'email' && !validationState.errors.email ? styles.info : validationState.errors.email ? styles.error : ''}
           />
-          {validationErrors.email && (
-            <span className={styles.errorMessage}>{validationErrors.email}</span>
+          <label className={styles.floatingLabel}>Email</label>
+          {validationState.focusedField === 'email' && !validationState.errors.email && (
+            <span className={`${styles.errorMessage} ${styles.info}`}>
+              {helpMessages.email}
+            </span>
           )}
-        </div>
-
-        <div className={styles.formGroup}>
-          <input
-            type="tel"
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-            placeholder="Phone Number (optional)"
-            className={validationErrors.phoneNumber ? styles.error : ''}
-          />
-          {validationErrors.phoneNumber && (
-            <span className={styles.errorMessage}>{validationErrors.phoneNumber}</span>
+          {validationState.errors.email && (
+            <span className={`${styles.errorMessage} ${styles.error}`}>
+              {validationState.errors.email}
+            </span>
           )}
         </div>
 
@@ -177,9 +214,12 @@ const RegisterForm: React.FC = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              onFocus={() => handleFocus('password')}
+              onBlur={handleBlur}
               placeholder="Password"
-              className={validationErrors.password ? styles.error : ''}
+              className={validationState.focusedField === 'password' && !validationState.errors.password ? styles.info : validationState.errors.password ? styles.error : ''}
             />
+            <label className={styles.floatingLabel}>Password</label>
             <button
               type="button"
               className={styles.togglePassword}
@@ -189,8 +229,15 @@ const RegisterForm: React.FC = () => {
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
-          {validationErrors.password && (
-            <span className={styles.errorMessage}>{validationErrors.password}</span>
+          {validationState.focusedField === 'password' && !validationState.errors.password && (
+            <span className={`${styles.errorMessage} ${styles.info}`}>
+              {helpMessages.password}
+            </span>
+          )}
+          {validationState.errors.password && (
+            <span className={`${styles.errorMessage} ${styles.error}`}>
+              {validationState.errors.password}
+            </span>
           )}
         </div>
 
@@ -201,9 +248,12 @@ const RegisterForm: React.FC = () => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
+              onFocus={() => handleFocus('confirmPassword')}
+              onBlur={handleBlur}
               placeholder="Confirm Password"
-              className={validationErrors.confirmPassword ? styles.error : ''}
+              className={validationState.focusedField === 'confirmPassword' && !validationState.errors.confirmPassword ? styles.info : validationState.errors.confirmPassword ? styles.error : ''}
             />
+            <label className={styles.floatingLabel}>Confirm Password</label>
             <button
               type="button"
               className={styles.togglePassword}
@@ -213,8 +263,15 @@ const RegisterForm: React.FC = () => {
               {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
-          {validationErrors.confirmPassword && (
-            <span className={styles.errorMessage}>{validationErrors.confirmPassword}</span>
+          {validationState.focusedField === 'confirmPassword' && !validationState.errors.confirmPassword && (
+            <span className={`${styles.errorMessage} ${styles.info}`}>
+              {helpMessages.confirmPassword}
+            </span>
+          )}
+          {validationState.errors.confirmPassword && (
+            <span className={`${styles.errorMessage} ${styles.error}`}>
+              {validationState.errors.confirmPassword}
+            </span>
           )}
         </div>
 

@@ -139,7 +139,6 @@ const userSchema = new mongoose.Schema({
   },
   newsletter: {
     type: Boolean,
-    default: true,
     required: false
   },
   fullName: {

@@ -186,4 +186,28 @@ export const deleteProfile = async (req: Request, res: Response): Promise<Respon
   } catch {
     return sendError(res, 500, 'Erreur lors de la suppression du compte');
   }
+};
+
+export const updateNewsletter = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { newsletter } = req.body;
+    
+    if (typeof newsletter !== 'boolean') {
+      return sendError(res, 400, 'La valeur newsletter doit être un booléen');
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { newsletter },
+      { new: true }
+    ).select('-password');
+
+    if (!user) {
+      return sendError(res, 404, 'Utilisateur non trouvé');
+    }
+
+    return sendSuccess(res, formatUserResponse(user), 'Préférence newsletter mise à jour avec succès');
+  } catch {
+    return sendError(res, 500, 'Erreur lors de la mise à jour de la préférence newsletter');
+  }
 }; 

@@ -16,7 +16,6 @@ import {
 import { toast } from 'react-toastify';
 import styles from './AdminDashboard.module.scss';
 import MessageModal from '../../components/MessageModal/MessageModal';
-import NewMessageModal from '../../components/NewMessageModal/NewMessageModal';
 
 const AdminDashboard: React.FC = () => {
   const user = useSelector(selectCurrentUser);
@@ -305,6 +304,7 @@ const AdminDashboard: React.FC = () => {
 
       {selectedMessage && (
         <MessageModal
+          mode="view"
           message={selectedMessage}
           onClose={() => setSelectedMessage(null)}
           onUpdateStatus={handleUpdateMessageStatus}
@@ -346,7 +346,8 @@ const AdminDashboard: React.FC = () => {
       )}
 
       {showNewMessageModal && (
-        <NewMessageModal
+        <MessageModal
+          mode="new"
           admins={admins}
           onClose={() => setShowNewMessageModal(false)}
           onSend={handleSendInternalMessage}
@@ -412,6 +413,7 @@ const AdminDashboard: React.FC = () => {
 
       {selectedMessage && (
         <MessageModal
+          mode="view"
           message={selectedMessage}
           onClose={() => setSelectedMessage(null)}
           onUpdateStatus={handleUpdateMessageStatus}
@@ -420,7 +422,8 @@ const AdminDashboard: React.FC = () => {
       )}
 
       {showNewMessageModal && (
-        <NewMessageModal
+        <MessageModal
+          mode="new"
           admins={admins}
           onClose={() => setShowNewMessageModal(false)}
           onSend={handleSendInternalMessage}

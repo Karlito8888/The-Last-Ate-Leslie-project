@@ -1,349 +1,352 @@
 @use "../../styles/globals/variables" as *;
 
 .profileContainer {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: $spacing-8;
-}
-
-.profileHeader {
-  text-align: center;
-  margin-bottom: $spacing-8 * 1.5;
-
-  h1 {
-    font-size: clamp($font-size-2xl, 1.3rem + 2vw, $font-size-3xl);
-    color: $color-primary;
-    margin-bottom: $spacing-2;
-  }
-
-  p {
-    color: rgba($color-black, 0.7);
-    font-size: clamp($font-size-base, 0.9rem + 0.5vw, $font-size-lg);
-  }
-}
-
-.tabsNav {
-  display: flex;
+  min-height: 100vh;
+  // display: flex;
+  align-items: center;
   justify-content: center;
-  gap: $spacing-4;
-  margin-bottom: $spacing-8;
-  flex-wrap: wrap;
+  padding: clamp(0rem, -2.5rem + 8vw, 2rem);
+  position: relative;
 
-  button {
-    padding: $spacing-3 $spacing-6;
-    border: none;
-    background: transparent;
-    color: rgba($color-black, 0.7);
-    font-size: $font-size-base;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.3s ease;
-
-    &:hover {
-      color: $color-primary;
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100vh;
+    background: 
+      linear-gradient(
+        to right,
+        rgba($color-white, 1) 0%,
+        rgba($color-white, 0.95) 20%,
+        rgba($color-white, 0.5) 100%
+      ),
+      image-set(
+        url('../../assets/images/profile/dubai-2287738_1920.webp') type('image/webp'),
+        url('../../assets/images/profile/dubai-2287738_1920.jpg') type('image/jpeg')
+      ) right center/cover no-repeat;
+    z-index: -1;
+    transition: all 0.3s ease-in-out;
+    
+    @media (max-width: 1280px) {
+      width: 60%;
+      background: 
+        linear-gradient(
+          to right,
+          rgba($color-white, 1) 0%,
+          rgba($color-white, 0.9) 30%,
+          rgba($color-white, 0.6) 100%
+        ),
+        image-set(
+          url('../../assets/images/profile/dubai-2287738_1280.webp') type('image/webp'),
+          url('../../assets/images/profile/dubai-2287738_1280.jpg') type('image/jpeg')
+        ) right center/cover no-repeat;
     }
-
-    &.active {
-      color: $color-primary;
-      border-bottom-color: $color-primary;
+    
+    @media (max-width: 640px) {
+      width: 100%;
+      background: 
+        linear-gradient(
+          135deg,
+          rgba($color-white, 0.98) 0%,
+          rgba($color-white, 0.95) 25%,
+          rgba($color-white, 0.85) 50%,
+          rgba($color-white, 0.75) 75%,
+          rgba($color-white, 0.65) 100%
+        ),
+        image-set(
+          url('../../assets/images/profile/dubai-2287738_640.webp') type('image/webp'),
+          url('../../assets/images/profile/dubai-2287738_640.jpg') type('image/jpeg')
+        ) center/cover no-repeat;
+      opacity: 1;
+      
+      @media (prefers-reduced-motion: no-preference) {
+        transform: translateZ(0);
+        will-change: transform;
+        animation: subtleParallax 20s ease-in-out infinite alternate;
+      }
     }
+  }
+
+
+@keyframes subtleParallax {
+  from {
+    background-position: center;
+  }
+  to {
+    background-position: center 10%;
   }
 }
 
-.content {
-  background: $color-white;
+.profileForm {
+  width: 100%;
+  max-width: clamp(20rem, 90vw, 70rem);
+  margin: 0 auto;
+  background: rgba($color-black, 0.8);
+  padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
   border-radius: $border-radius-lg;
-  padding: $spacing-8;
-  box-shadow: $shadow-lg;
+  border: 1px solid rgba($color-primary, 0.1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba($color-black, 0.2);
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 90vh;
+
+  @media (min-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+
+    h2 {
+      grid-column: 1 / -1;
+    }
+
+    .section {
+      &:nth-child(2) { // Basic Information
+        grid-column: 1 / -1;
+      }
+    }
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+
+    .section {
+      &:nth-child(2) { // Basic Information
+        grid-column: 1 / -1;
+      }
+    }
+  }
 
   h2 {
-    color: $color-primary;
-    font-size: $font-size-2xl;
-    margin-bottom: $spacing-8;
+    color: $color-white;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: clamp(1.2rem, 0.2rem + 3.2vw, 2rem);
+    letter-spacing: 2px;
+  }
+
+  // Scrollbar styling
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba($color-white, 0.1);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba($color-primary, 0.5);
+    border-radius: 4px;
+    
+    &:hover {
+      background: $color-primary;
+    }
   }
 }
 
-.emptyState {
-  text-align: center;
-  color: rgba($color-black, 0.5);
-  padding: $spacing-8 * 1.5 0;
-  font-style: italic;
-}
-
-// Styles communs pour les cartes
-%card {
-  background: rgba($color-white, 0.02);
-  border: 1px solid rgba($color-primary, 0.1);
-  border-radius: $border-radius-lg;
-  padding: $spacing-6;
-  margin-bottom: $spacing-4;
+.section {
+  margin-bottom: 2rem;
+  background: rgba($color-black, 0.3);
+  padding: 1.5rem;
+  border-radius: $border-radius-md;
+  border: 1px solid rgba($color-white, 0.1);
   transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: $shadow-lg;
+    background: rgba($color-black, 0.4);
+    border-color: rgba($color-primary, 0.2);
   }
 
   h3 {
-    color: $color-primary;
-    font-size: $font-size-lg;
-    margin-bottom: $spacing-4;
-  }
-
-  p {
-    color: rgba($color-black, 0.7);
-    margin-bottom: $spacing-2;
-    font-size: $font-size-base;
-  }
-}
-
-// Styles spécifiques pour chaque section
-.quoteCard {
-  @extend %card;
-}
-
-.projectCard {
-  @extend %card;
-}
-
-.documentCard {
-  @extend %card;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  .downloadButton {
-    background: $color-primary;
+    margin-bottom: 1rem;
     color: $color-white;
-    padding: $spacing-2 $spacing-4;
-    border-radius: $border-radius-sm;
-    text-decoration: none;
-    transition: background 0.3s ease;
-
-    &:hover {
-      background: $color-primary-dark;
-    }
-  }
-}
-
-.appointmentCard {
-  @extend %card;
-}
-
-.newAppointmentButton {
-  background: $color-primary;
-  color: $color-white;
-  border: none;
-  padding: $spacing-4 $spacing-8;
-  border-radius: $border-radius-sm;
-  cursor: pointer;
-  margin-bottom: $spacing-8;
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: #1a5f7a;
-  }
-}
-
-.messagesSection {
-  .messagesList {
-    max-height: 400px;
-    overflow-y: auto;
-    margin-bottom: $spacing-4;
-    padding-right: $spacing-4;
-  }
-
-  .messageCard {
-    @extend %card;
-    margin-bottom: $spacing-4;
-
-    .messageHeader {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: $spacing-2;
-      font-size: $font-size-sm;
-      color: rgba($color-black, 0.6);
-    }
-  }
-
-  .messageInput {
+    font-size: clamp(1rem, 0.8rem + 1vw, 1.2rem);
+    opacity: 0.9;
     display: flex;
-    gap: $spacing-4;
-    margin-top: $spacing-4;
+    align-items: center;
+    gap: 0.5rem;
 
-    input {
+    &::after {
+      content: '';
       flex: 1;
-      padding: $spacing-3;
-      border: 1px solid rgba($color-primary, 0.2);
-      border-radius: $border-radius-sm;
-      font-size: $font-size-base;
-
-      &:focus {
-        outline: none;
-        border-color: $color-primary;
-      }
+      height: 1px;
+      background: rgba($color-white, 0.2);
     }
-
-    button {
-      background: $color-primary;
-      color: $color-white;
-      border: none;
-      padding: 0 $spacing-6;
-      border-radius: $border-radius-sm;
-      cursor: pointer;
-      transition: background 0.3s ease;
-
-      &:hover {
-        background: $color-primary-dark;
-      }
-    }
-  }
-}
-
-.infoSection {
-  background: rgba($color-white, 0.95);
-  padding: clamp(1rem, 3vw, 2rem);
-  border-radius: $border-radius-lg;
-  box-shadow: $box-shadow-md;
-  
-  @media (max-width: 480px) {
-    padding: 1rem;
-    margin: 0.5rem;
-    border-radius: $border-radius-sm;
-  }
-
-  h2 {
-    color: $color-primary;
-    margin-bottom: 2rem;
-    font-size: clamp(1.5rem, 4vw, 2rem);
-    
-    @media (max-width: 480px) {
-      font-size: 1.25rem;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-  }
-}
-
-.infoForm {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-
-  @media (max-width: 480px) {
-    gap: 1rem;
   }
 }
 
 .formGroup {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
 
-  @media (max-width: 480px) {
-    margin-bottom: 0.75rem;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: $color-text-dark;
-    font-size: 0.9rem;
-
-    @media (max-width: 480px) {
-      font-size: 0.85rem;
-      margin-bottom: 0.25rem;
-    }
-  }
-
-  input, select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid $color-border;
-    border-radius: $border-radius-sm;
+  .floatingLabel {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba($color-white, 0.5);
+    pointer-events: none;
+    transition: all 0.2s ease;
     font-size: 1rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+  }
 
-    @media (max-width: 480px) {
-      padding: 0.5rem;
-      font-size: 0.9rem;
+  .helpText {
+    position: absolute;
+    left: 0;
+    bottom: -1.2rem;
+    font-size: 0.8rem;
+    color: $color-primary;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba($color-white, 0.05);
+    border: 1px solid rgba($color-white, 0.1);
+    border-radius: $border-radius-sm;
+    color: $color-white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+
+    &:focus,
+    &:not(:placeholder-shown) {
+      & + .floatingLabel {
+        top: 0;
+        font-size: 0.8rem;
+        color: $color-primary;
+        background: #3c3c3c;
+        border: 1px solid rgba($color-primary, 0.5);
+      }
     }
 
     &::placeholder {
-      color: $color-text-light;
-      font-size: 0.9rem;
+      color: transparent;
+    }
 
-      @media (max-width: 480px) {
-        font-size: 0.85rem;
-      }
+    &:focus {
+      outline: none;
+      border-color: rgba($color-primary, 0.5);
+    }
+
+    &.error {
+      border-color: $color-error-border;
+      animation: shake 0.5s ease-in-out;
+    }
+  }
+
+  select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba($color-white, 0.05);
+    border: 1px solid rgba($color-white, 0.1);
+    border-radius: $border-radius-sm;
+    color: $color-white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    
+    &:focus {
+      outline: none;
+      border-color: rgba($color-primary, 0.5);
+    }
+
+    option {
+      background: #3c3c3c;
+      color: $color-white;
     }
   }
 }
 
-.formRow {
+.formGroupWithButton {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 
-  @media (max-width: 480px) {
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .formGroup {
+  .inputWrapper {
     flex: 1;
-    margin-bottom: 0;
+    position: relative;
+
+    input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: rgba($color-white, 0.05);
+      border: 1px solid rgba($color-white, 0.1);
+      border-radius: $border-radius-sm;
+      color: $color-white;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+
+      &::placeholder {
+        color: transparent;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: rgba($color-primary, 0.5);
+      }
+
+      &:focus,
+      &:not(:placeholder-shown) {
+        & + .floatingLabel {
+          top: 0;
+          font-size: 0.8rem;
+          color: $color-primary;
+          background: #3c3c3c;
+          border: 1px solid rgba($color-primary, 0.5);
+        }
+      }
+    }
+
+    .floatingLabel {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba($color-white, 0.5);
+      pointer-events: none;
+      transition: all 0.2s ease;
+      font-size: 1rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      z-index: 1;
+    }
   }
-}
 
-.nameTitle, .addressTitle {
-  color: $color-primary;
-  margin: 1.5rem 0 1rem;
-  font-size: 1.2rem;
-  border-bottom: 2px solid rgba($color-primary, 0.1);
-  padding-bottom: 0.5rem;
-
-  @media (max-width: 480px) {
-    font-size: 1.1rem;
-    margin: 1rem 0 0.75rem;
-    text-align: center;
-  }
-}
-
-.addressFields {
-  background: rgba($color-primary, 0.02);
-  padding: 1.5rem;
-  border-radius: $border-radius-md;
-  border: 1px solid rgba($color-primary, 0.1);
-
-  @media (max-width: 480px) {
-    padding: 1rem;
-    margin: 0 -0.5rem;
+  .updateButton {
+    padding: 0.75rem 1rem;
+    background: rgba($color-primary, 0.8);
+    color: $color-white;
+    border: none;
     border-radius: $border-radius-sm;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+
+    &:disabled {
+      background: rgba($color-white, 0.1);
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      background: $color-primary;
+      transform: translateY(-1px);
+    }
   }
-}
 
-.dateInputWrapper {
-  position: relative;
-
-  @media (max-width: 480px) {
-    display: flex;
+  @media (max-width: 640px) {
     flex-direction: column;
     gap: 0.5rem;
-  }
 
-  .calendarInput {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 2.5rem;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-
-    @media (max-width: 480px) {
-      position: relative;
+    .updateButton {
       width: 100%;
-      height: 2.5rem;
-      opacity: 1;
     }
   }
 }
@@ -352,114 +355,242 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.9rem;
-  color: $color-text-dark;
   cursor: pointer;
-
-  @media (max-width: 480px) {
-    font-size: 0.85rem;
-    margin: 1rem 0;
-  }
+  color: $color-white;
 
   input[type="checkbox"] {
     width: auto;
-    margin-right: 0.5rem;
   }
 }
 
 .submitButton {
-  background: $color-primary;
+  width: 100%;
+  padding: 1rem;
+  background: rgba($color-primary, 0.8);
   color: $color-white;
-  padding: 0.75rem 1.5rem;
   border: none;
   border-radius: $border-radius-sm;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100%;
-  margin-top: 1rem;
-
-  @media (max-width: 480px) {
-    padding: 0.75rem;
-    font-size: 0.95rem;
-    margin-top: 0.5rem;
-  }
-
-  &:hover {
-    background: #1a5f7a;
-  }
 
   &:disabled {
-    opacity: 0.7;
+    background: rgba($color-white, 0.1);
     cursor: not-allowed;
   }
+
+  &:hover:not(:disabled) {
+    background: $color-primary;
+  }
 }
 
-.withSeparator {
+.dangerZone {
+  grid-column: 1 / -1;
+  margin-top: 3rem;
+  padding: 2rem;
+  background: rgba($color-black, 0.3);
+  border-radius: $border-radius-lg;
+  border: 1px solid rgba($color-primary, 0.1);
   position: relative;
-  padding-top: 1.5rem;
-  margin-top: 1.5rem;
-
-  @media (max-width: 480px) {
-    padding-top: 1rem;
-    margin-top: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba($color-black, 0.4);
+    border-color: rgba($color-primary, 0.2);
   }
-
+  
   &::before {
-    content: '';
+    content: '🔒';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: rgba($color-primary, 0.1);
-  }
-}
-
-// Responsive
-@media (max-width: 768px) {
-  .profileContainer {
-    padding: $spacing-4;
+    top: -2rem;
+    right: -2rem;
+    font-size: 8rem;
+    opacity: 0.1;
+    transform: rotate(15deg);
   }
 
-  .tabsNav {
-    gap: $spacing-2;
+  h3 {
+    color: $color-white;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 
-    button {
-      padding: $spacing-2 $spacing-4;
-      font-size: $font-size-sm;
+    &::before {
+      content: '';
+      width: 4px;
+      height: 1.5rem;
+      background: $color-primary;
+      border-radius: 2px;
     }
   }
 
-  .content {
-    padding: $spacing-4;
+  p {
+    color: $color-white;
+    opacity: 0.8;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
   }
 
-  .messageInput {
-    flex-direction: column;
-    
-    button {
+  input {
+    width: 100%;
+    padding: 1rem;
+    background: rgba($color-white, 0.05);
+    border: 1px solid rgba($color-white, 0.1);
+    border-radius: $border-radius-sm;
+    color: $color-white;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: rgba($color-primary, 0.5);
+      background: rgba($color-white, 0.08);
+    }
+  }
+
+  .deleteButton {
+    width: 100%;
+    padding: 1rem;
+    background: rgba($color-primary, 0.8);
+    color: $color-white;
+    border: none;
+    border-radius: $border-radius-sm;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      padding: $spacing-3;
+      height: 100%;
+      background: linear-gradient(
+        45deg,
+        transparent 0%,
+        rgba($color-white, 0.1) 50%,
+        transparent 100%
+      );
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    &:hover {
+      background: $color-primary;
+      transform: translateY(-1px);
+
+      &::before {
+        transform: translateX(100%);
+      }
     }
   }
-} 
 
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-  font-size: $font-size-lg;
-  color: $color-primary;
+  .deleteActions {
+    display: flex;
+    gap: 1rem;
+
+    button {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      border-radius: $border-radius-sm;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          45deg,
+          transparent 0%,
+          rgba($color-white, 0.1) 50%,
+          transparent 100%
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      &:hover::before {
+        transform: translateX(100%);
+      }
+    }
+
+    .confirmDeleteButton {
+      background: rgba($color-primary, 0.8);
+      color: $color-white;
+
+      &:hover:not(:disabled) {
+        background: $color-primary;
+        transform: translateY(-1px);
+      }
+
+      &:disabled {
+        background: rgba($color-white, 0.1);
+        cursor: not-allowed;
+      }
+    }
+
+    .cancelButton {
+      background: rgba($color-white, 0.1);
+      color: $color-white;
+      backdrop-filter: blur(5px);
+
+      &:hover {
+        background: rgba($color-white, 0.2);
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    padding: 1.5rem;
+    
+    .deleteActions {
+      flex-direction: column;
+      
+      button {
+        width: 100%;
+        
+        &:last-child {
+          margin-top: 0.5rem;
+        }
+      }
+    }
+  }
 }
 
-.error {
-  background-color: $color-error-bg;
-  color: $color-error-text;
-  padding: $spacing-4;
-  margin-bottom: $spacing-4;
-  border-radius: $border-radius-sm;
-  border: 1px solid $color-error-border;
-  text-align: center;
-} 
+// Animation d'entrée pour les sections
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section {
+  animation: fadeInSlide 0.5s ease-out forwards;
+  
+  @for $i from 1 through 6 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
+}}

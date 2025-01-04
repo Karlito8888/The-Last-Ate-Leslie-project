@@ -49,6 +49,37 @@ describe('Auth Endpoints', () => {
         username: validUserData.username,
         email: validUserData.email
       });
+      expect(body.data?.user.newsletter).toBeUndefined();
+    });
+
+    it('should create a new user with newsletter subscription', async () => {
+      const res = await request(app)
+        .post('/api/auth/register')
+        .send({
+          ...validUserData,
+          newsletter: true
+        });
+
+      const body = res.body as ApiResponse<AuthResponse>;
+
+      expect(res.status).toBe(201);
+      expect(body.success).toBe(true);
+      expect(body.data?.user.newsletter).toBe(true);
+    });
+
+    it('should create a new user without newsletter subscription', async () => {
+      const res = await request(app)
+        .post('/api/auth/register')
+        .send({
+          ...validUserData,
+          newsletter: false
+        });
+
+      const body = res.body as ApiResponse<AuthResponse>;
+
+      expect(res.status).toBe(201);
+      expect(body.success).toBe(true);
+      expect(body.data?.user.newsletter).toBe(false);
     });
 
     it('should not create user with existing email', async () => {

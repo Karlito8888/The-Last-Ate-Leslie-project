@@ -7,7 +7,6 @@ import userReducer from './slices/userSlice'
 import { authApi } from './api/authApi'
 import { profileApi } from './api/profileApi'
 import { adminApi } from './api/adminApi'
-import { adminInternalMessageApi } from './api/adminInternalMessageApi'
 import { contactApi } from './api/contactApi'
 import { eventApi } from './api/eventApi'
 import { reviewApi } from './api/reviewApi'
@@ -24,7 +23,6 @@ export const store = configureStore({
       authApi.middleware,
       profileApi.middleware,
       adminApi.middleware,
-      adminInternalMessageApi.middleware,
       contactApi.middleware,
       eventApi.middleware,
       reviewApi.middleware,

@@ -40,7 +40,7 @@ const formatUserResponse = (user: any): UserResponse => {
 
 export const register = async (req: Request, res: Response<ApiResponse<AuthResponse>>): Promise<Response> => {
   try {
-    const { username, email, password, newsletter = true } = req.body;
+    const { username, email, password, newsletter } = req.body;
 
     const errors: string[] = [];
 
@@ -191,11 +191,4 @@ export const resetPassword = async (req: Request, res: Response<ApiResponse>): P
   } catch (error) {
     return handleError(res, 500, 'Erreur lors de la réinitialisation');
   }
-};
-
-export const logout = (_req: Request, res: Response<ApiResponse>): Response => {
-  return res.json({
-    success: true,
-    message: 'Déconnexion réussie'
-  });
 }; 

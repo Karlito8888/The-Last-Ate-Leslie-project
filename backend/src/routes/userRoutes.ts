@@ -1,5 +1,5 @@
 import express from 'express';
-import { getProfile, updateProfile, updateUsername, updateEmail, updatePassword, deleteProfile } from '../controllers/userController';
+import { getProfile, updateProfile, updateUsername, updateEmail, updatePassword, deleteProfile, updateNewsletter } from '../controllers/userController';
 import { protect } from '../middleware/auth';
 
 const router = express.Router();
@@ -13,6 +13,7 @@ router.put('/profile', updateProfile);
 router.put('/profile/username', updateUsername);
 router.put('/profile/email', updateEmail);
 router.put('/profile/password', updatePassword);
+router.put('/profile/newsletter', updateNewsletter);
 router.delete('/profile', deleteProfile);
 
 export default router; 

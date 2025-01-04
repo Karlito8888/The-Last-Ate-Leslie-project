@@ -1,5 +1,25 @@
 @use "../../styles/globals/variables" as *;
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes subtleParallax {
+  from {
+    background-position: center;
+  }
+  to {
+    background-position: center 10%;
+  }
+}
+
 .registerContainer {
   min-height: 100vh;
   display: flex;
@@ -68,194 +88,221 @@
       }
     }
   }
-}
 
-.registerHeader {
-  text-align: center;
-  margin-bottom: clamp(3rem, 2rem + 3vw, 5rem);
-  animation: fadeInUp 0.8s ease-out forwards;
-
-  h3 {
-    font-size: clamp(2rem, 1.5rem + 3vw, 4rem);
-    color: $color-primary;
-    margin-bottom: 1.5rem;
-    font-weight: 300;
-    letter-spacing: 2px;
-  }
-
-  .subtitle {
-    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.3rem);
-    color: rgba($color-black, 0.8);
-    max-width: 800px;
-    margin: 0 auto;
-    line-height: 1.8;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes subtleParallax {
-  from {
-    background-position: center;
-  }
-  to {
-    background-position: center 10%;
-  }
-}
-
-.registerForm {
-  width: 100%;
-  max-width: clamp(20rem, 15rem + 20vw, 30rem);
-  padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-  background: rgba($color-black, 0.8);
-  border-radius: $border-radius-lg;
-  border: 1px solid rgba($color-primary, 0.1);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba($color-black, 0.2);
-
-  h2 {
-    color: $color-white;
+  .registerHeader {
     text-align: center;
-    margin-bottom: 2rem;
-    font-size: clamp(1.2rem, 0.2rem + 3.2vw, 2rem);
-    letter-spacing: 2px;
+    margin-bottom: clamp(3rem, 2rem + 3vw, 5rem);
+    animation: fadeInUp 0.8s ease-out forwards;
+
+    h3 {
+      font-size: clamp(2rem, 1.5rem + 3vw, 4rem);
+      color: $color-primary;
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      font-size: clamp(1.1rem, 1rem + 0.5vw, 1.3rem);
+      color: rgba($color-black, 0.8);
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
   }
 
-  .formGroup {
-    margin-bottom: 1.5rem;
-    position: relative;
+  .registerForm {
+    width: 100%;
+    max-width: clamp(20rem, 15rem + 20vw, 30rem);
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    background: rgba($color-black, 0.8);
+    border-radius: $border-radius-lg;
+    border: 1px solid rgba($color-primary, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba($color-black, 0.2);
 
-    input {
-      width: 100%;
-      padding: 0.8rem 1rem;
-      background: rgba($color-white, 0.05);
-      border: 1px solid rgba($color-white, 0.1);
-      border-radius: $border-radius-sm;
+    h2 {
       color: $color-white;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-
-      &::placeholder {
-        color: rgba($color-white, 0.5);
-      }
-
-      &:focus {
-        outline: none;
-        border-color: rgba($color-primary, 0.5);
-        background: rgba($color-white, 0.08);
-      }
-
-      &.error {
-        border-color: $color-error-border;
-        animation: shake 0.5s ease-in-out;
-      }
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: clamp(1.2rem, 0.2rem + 3.2vw, 2rem);
+      letter-spacing: 2px;
     }
 
-    .errorMessage {
-      position: absolute;
-      left: 0;
-      bottom: -1.2rem;
-      color: $color-error-text;
-      font-size: 0.8rem;
-      opacity: 0.9;
-      background: $color-error-bg;
-      border: 1px solid $color-error-border;
-      padding: 0.5rem;
-      border-radius: $border-radius-sm;
-    }
-
-    .passwordInputWrapper {
+    .formGroup {
+      margin-bottom: 1.5rem;
       position: relative;
-      width: 100%;
+
+      .floatingLabel {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba($color-white, 0.5);
+        pointer-events: none;
+        transition: all 0.2s ease;
+        font-size: 1rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 10px;
+        border: 1px solid transparent;
+      }
 
       input {
         width: 100%;
-        padding-right: 40px; // Space for the eye icon
-      }
+        padding: 0.8rem 1rem;
+        background: rgba($color-white, 0.05);
+        border: 1px solid rgba($color-white, 0.1);
+        border-radius: $border-radius-sm;
+        color: $color-white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
 
-      .togglePassword {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 5px;
-        display: flex;
-        align-items: center;
-        color: #666;
-        
-        &:hover {
-          color: #333;
+        &:focus,
+        &:not(:placeholder-shown) {
+          & + .floatingLabel {
+            top: 0;
+            font-size: 0.8rem;
+            color: $color-primary;
+            background: #3c3c3c;
+            border: 1px solid rgba($color-primary, 0.5);
+          }
+        }
+
+        &::placeholder {
+          color: transparent;
         }
 
         &:focus {
           outline: none;
+          border-color: rgba($color-primary, 0.5);
+        }
+
+        &.error {
+          border-color: $color-error-border;
+          animation: shake 0.5s ease-in-out;
         }
       }
+
+      .errorMessage {
+        position: absolute;
+        left: 0;
+        bottom: -1.5rem;
+        font-size: 0.65rem;
+        padding: 0.3rem 0;
+        transition: all 0.2s ease;
+        opacity: 0;
+        transform: translateY(-5px);
+        
+        &.info {
+          color: rgba($color-primary, 0.8);
+          opacity: 0.8;
+          transform: translateY(0);
+        }
+        
+        &.error {
+          color: $color-error-text;
+          background: $color-error-bg;
+          border: 1px solid $color-error-border;
+          padding: 0.5rem;
+          border-radius: $border-radius-sm;
+          opacity: 0.9;
+        }
+      }
+
+      .passwordInputWrapper {
+        position: relative;
+        width: 100%;
+
+        input {
+          width: 100%;
+          padding-right: 40px;
+        }
+
+        .floatingLabel {
+          z-index: 1;
+        }
+
+        .togglePassword {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 5px;
+          display: flex;
+          align-items: center;
+          color: rgba($color-white, 0.5);
+          z-index: 2;
+          
+          &:hover {
+            color: $color-white;
+          }
+
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+
+      .checkmark {
+        border-color: rgba($color-primary, 0.5);
+        background-color: rgba($color-white, 0.08);
+      }
     }
-  }
 
-  .apiError {
-    margin: 1rem 0;
-    padding: 0.8rem;
-    background: rgba($color-error-bg, 0.1);
-    border: 1px solid rgba($color-error-border, 0.2);
-    border-radius: $border-radius-sm;
-    color: $color-error-text;
-    text-align: center;
-    font-size: 0.9rem;
-  }
-
-  .submitButton {
-    width: 100%;
-    padding: 0.8rem;
-    margin-top: 1rem;
-    background: $color-primary;
-    color: $color-white;
-    border: none;
-    border-radius: $border-radius-sm;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    letter-spacing: 1px;
-
-    &:hover:not(:disabled) {
-      background: $color-primary-dark;
-      transform: translateY(-1px);
+    .apiError {
+      margin: 1rem 0;
+      padding: 0.8rem;
+      background: rgba($color-error-bg, 0.1);
+      border: 1px solid rgba($color-error-border, 0.2);
+      border-radius: $border-radius-sm;
+      color: $color-error-text;
+      text-align: center;
+      font-size: 0.9rem;
     }
 
-    &:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-  }
-
-  .loginLink {
-    margin-top: 1.5rem;
-    text-align: center;
-    color: rgba($color-white, 0.7);
-    font-size: 0.8rem;
-
-    span {
-      color: $color-primary;
+    .submitButton {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 1rem;
+      background: $color-primary;
+      color: $color-white;
+      border: none;
+      border-radius: $border-radius-sm;
+      font-size: 1rem;
       cursor: pointer;
-      transition: color 0.3s ease;
-      margin-left: 10px;
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
 
-      &:hover {
-        color: $color-primary-dark;
-        text-decoration: underline;
+      &:hover:not(:disabled) {
+        background: $color-primary-dark;
+        transform: translateY(-1px);
+      }
+
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+    }
+
+    .loginLink {
+      margin-top: 1.5rem;
+      text-align: center;
+      color: rgba($color-white, 0.7);
+      font-size: 0.8rem;
+
+      span {
+        color: $color-primary;
+        cursor: pointer;
+        transition: color 0.3s ease;
+        margin-left: 10px;
+
+        &:hover {
+          color: $color-primary-dark;
+          text-decoration: underline;
+        }
       }
     }
   }
