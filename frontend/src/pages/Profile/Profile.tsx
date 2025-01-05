@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { logout } from '../../store/slices/authSlice'
 import { 
   useGetProfileQuery, 
   useUpdateProfileMutation,
@@ -24,7 +26,7 @@ const isValidNamePart = (name: string): boolean => {
 };
 
 const isValidMobilePhone = (phone: string): boolean => {
-  const MOBILE_REGEX = /^\+971-?5[0-8]-?[0-9]{7}$/;
+  const MOBILE_REGEX = /^\+971-?5[0-9]-?[0-9]{7}$/;
   return !phone || MOBILE_REGEX.test(phone);
 };
 
@@ -88,6 +90,7 @@ interface UserInfo {
 
 const Profile: React.FC = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const { 
     data: userData, 
     isLoading: isLoadingProfile, 
@@ -198,6 +201,25 @@ const Profile: React.FC = () => {
   const handleUserInfoSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    // Fonction utilitaire pour nettoyer les objets
+    const cleanObject = (obj: any) => {
+      const cleaned: any = {};
+      Object.keys(obj).forEach(key => {
+        if (obj[key] !== undefined && obj[key] !== '' && 
+            (typeof obj[key] !== 'object' || Object.keys(obj[key]).length > 0)) {
+          if (typeof obj[key] === 'object') {
+            const cleanedNested = cleanObject(obj[key]);
+            if (Object.keys(cleanedNested).length > 0) {
+              cleaned[key] = cleanedNested;
+            }
+          } else {
+            cleaned[key] = obj[key];
+          }
+        }
+      });
+      return cleaned;
+    };
+    
     // Validation du nom complet
     if (userInfo.fullName) {
       if (userInfo.fullName.firstName && !isValidNamePart(userInfo.fullName.firstName)) {
@@ -236,22 +258,28 @@ const Profile: React.FC = () => {
       return;
     }
     
-    // Préparer les données à envoyer
-    const profileData = {
+    // Préparer les données à envoyer en nettoyant les valeurs vides et undefined
+    const rawData = {
       fullName: userInfo.fullName,
       birthDate: userInfo.birthDate,
       mobilePhone: userInfo.mobilePhone,
       landline: userInfo.landline,
       address: userInfo.address,
       newsletter: userInfo.newsletter
-    }
+    };
+
+    const profileData = cleanObject(rawData);
+    
+    console.log('Données nettoyées à envoyer:', profileData);
     
     try {
-      await updateProfile(profileData).unwrap()
+      const response = await updateProfile(profileData).unwrap()
+      console.log('Réponse du serveur:', response);
       toast.success('Profile updated successfully')
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to update profile:', err)
-      toast.error('Failed to update profile')
+      const errorMessage = err.data?.message || 'Failed to update profile'
+      toast.error(errorMessage)
     }
   }
 
@@ -299,11 +327,30 @@ const Profile: React.FC = () => {
 
     try {
       await deleteProfile({ password: deletePassword }).unwrap()
-      toast.success('Account deleted successfully')
-      navigate('/login')
+      
+      // Créer une promesse pour gérer la redirection de manière synchrone
+      await new Promise<void>((resolve) => {
+        // Nettoyer l'authentification
+        dispatch(logout())
+        localStorage.removeItem('token')
+        
+        // Attendre un court instant pour s'assurer que le state est mis à jour
+        setTimeout(() => {
+          navigate('/')
+          toast.success('Account deleted successfully')
+          resolve()
+        }, 100)
+      })
     } catch (err) {
       console.error('Failed to delete account:', err)
       toast.error('Failed to delete account')
+    }
+  }
+
+  // Empêcher la soumission du formulaire avec la touche Entrée
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
     }
   }
 
@@ -317,7 +364,11 @@ const Profile: React.FC = () => {
 
   return (
     <div className={styles.profileContainer}>
-      <form onSubmit={handleUserInfoSubmit} className={styles.profileForm}>
+      <form 
+        onSubmit={handleUserInfoSubmit} 
+        className={styles.profileForm}
+        onKeyDown={handleKeyDown}
+      >
         <h2>Profile Information</h2>
         
         {/* Basic Information */}

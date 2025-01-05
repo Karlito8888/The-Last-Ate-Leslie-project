@@ -32,6 +32,6 @@ export const UAE_CONSTANTS = {
 };
 
 export const UAE_PHONE_CONSTANTS = {
-  MOBILE_REGEX: /^\+971-?5[0-8]-?[0-9]{7}$/,
+  MOBILE_REGEX: /^\+971-?5[0-9]-?[0-9]{7}$/,
   LANDLINE_REGEX: /^\+971-?[0-9]-?[0-9]{7}$/
 }; 
