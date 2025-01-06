@@ -1,16 +1,38 @@
 import { BaseEntity, createExtendedApi } from './baseApi';
 
+interface IUserName {
+  honorificTitle?: string;
+  firstName?: string;
+  fatherName?: string;
+  familyName?: string;
+  gender?: 'male' | 'female';
+}
+
+interface IAddress {
+  unit?: string;
+  buildingName?: string;
+  street?: string;
+  dependentLocality?: string;
+  poBox?: string;
+  city?: string;
+  emirate?: string;
+}
+
 interface User extends BaseEntity {
   username: string;
   email: string;
   role: string;
-  newsletterSubscribed: boolean;
-  mobileNumber?: string;
-  landlineNumber?: string;
+  newsletter?: boolean;
+  fullName?: IUserName;
+  birthDate?: string;
+  mobilePhone?: string;
+  landline?: string;
+  address?: IAddress;
 }
 
 interface LoginResponse {
   success: boolean;
+  message: string;
   data: {
     user: User;
     token: string;
@@ -26,7 +48,7 @@ interface RegisterRequest {
   username: string;
   email: string;
   password: string;
-  newsletterSubscribed?: boolean;
+  newsletter?: boolean;
 }
 
 export const authApi = createExtendedApi({

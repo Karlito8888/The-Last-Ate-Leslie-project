@@ -23,8 +23,8 @@ export type TagTypes =
   | 'Auth'
   | 'Profile'
   | 'AdminUsers'
-  | 'AdminMessages'
-  | 'AdminStats'
+  | 'AdminProfile'
+  | 'NewsletterHistory'
   | 'Contact'
   | 'Events'
   | 'Reviews'
@@ -65,8 +65,8 @@ export const baseApi = createApi({
     'Auth',
     'Profile',
     'AdminUsers',
-    'AdminMessages',
-    'AdminStats',
+    'AdminProfile',
+    'NewsletterHistory',
     'Contact',
     'Events',
     'Reviews',

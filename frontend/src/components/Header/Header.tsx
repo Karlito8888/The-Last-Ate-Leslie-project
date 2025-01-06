@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Logo from '../Logo/Logo'
 import { selectCurrentUser, setCredentials } from '../../store/slices/authSlice'
+import { useGetProfileQuery } from '../../store/api/profileApi'
 import styles from './Header.module.scss'
 
 interface HeaderProps {
@@ -11,39 +12,28 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ isFirstVisit }) => {
   const dispatch = useDispatch()
   const user = useSelector(selectCurrentUser)
+  const token = localStorage.getItem('token')
+  const { data: profileData } = useGetProfileQuery(undefined, {
+    skip: !token || !!user
+  })
 
   useEffect(() => {
-    // Vérifier si un token existe dans le localStorage
-    const token = localStorage.getItem('token')
-    if (token && !user) {
-      // Si on a un token mais pas d'utilisateur dans le state, on récupère les infos du token
-      try {
-        const tokenData = JSON.parse(atob(token.split('.')[1]))
-        console.log('Token décodé:', tokenData)
-        dispatch(setCredentials({
-          user: {
-            id: tokenData.userId,
-            username: tokenData.username,
-            email: tokenData.email,
-            role: tokenData.role
-          },
-          token
-        }))
-      } catch (error) {
-        console.error('Failed to parse token:', error)
-        localStorage.removeItem('token')
-      }
+    if (token && !user && profileData?.data) {
+      dispatch(setCredentials({
+        user: profileData.data,
+        token
+      }))
     }
-  }, [dispatch, user])
+  }, [dispatch, user, profileData, token])
 
   return (
     <header className={styles.header}>
       <h1 className={styles.srOnly}>Dynamic Vision Global</h1>
       <h2 className={styles.srOnly}>The best PR & Marketing provider in Dubai</h2>
       <Logo isFirstVisit={isFirstVisit} />
-      {user && (
+      {(user || (token && profileData?.data)) && (
         <div className={styles.welcomeMessage}>
-          <span>Hello {user?.username || 'User'} 👋</span>
+          <span>Hello {user?.username || profileData?.data.username} 👋</span>
         </div>
       )}
     </header>

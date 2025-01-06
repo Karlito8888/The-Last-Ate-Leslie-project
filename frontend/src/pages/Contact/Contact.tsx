@@ -157,7 +157,7 @@ const Contact: React.FC = () => {
             <button
               type="submit"
               className={styles.submitButton}
-              disabled={isSubmitting}
+              disabled
             >
               {isSubmitting ? 'Sending...' : 'Send Message'}
             </button>

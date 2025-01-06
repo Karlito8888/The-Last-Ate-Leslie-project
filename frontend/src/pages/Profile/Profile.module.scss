@@ -7,15 +7,16 @@
   justify-content: center;
   padding: clamp(0rem, -2.5rem + 8vw, 2rem);
   position: relative;
+  // letter-spacing: 1px;
 
   &::before {
-    content: '';
+    content: "";
     position: fixed;
     top: 0;
     right: 0;
     width: 50%;
     height: 100vh;
-    background: 
+    background:
       linear-gradient(
         to right,
         rgba($color-white, 1) 0%,
@@ -23,15 +24,18 @@
         rgba($color-white, 0.5) 100%
       ),
       image-set(
-        url('../../assets/images/profile/dubai-2287738_1920.webp') type('image/webp'),
-        url('../../assets/images/profile/dubai-2287738_1920.jpg') type('image/jpeg')
-      ) right center/cover no-repeat;
+          url("../../assets/images/profile/dubai-2287738_1920.webp")
+            type("image/webp"),
+          url("../../assets/images/profile/dubai-2287738_1920.jpg")
+            type("image/jpeg")
+        )
+        right center/cover no-repeat;
     z-index: -1;
     transition: all 0.3s ease-in-out;
-    
+
     @media (max-width: 1280px) {
       width: 60%;
-      background: 
+      background:
         linear-gradient(
           to right,
           rgba($color-white, 1) 0%,
@@ -39,14 +43,17 @@
           rgba($color-white, 0.6) 100%
         ),
         image-set(
-          url('../../assets/images/profile/dubai-2287738_1280.webp') type('image/webp'),
-          url('../../assets/images/profile/dubai-2287738_1280.jpg') type('image/jpeg')
-        ) right center/cover no-repeat;
+            url("../../assets/images/profile/dubai-2287738_1280.webp")
+              type("image/webp"),
+            url("../../assets/images/profile/dubai-2287738_1280.jpg")
+              type("image/jpeg")
+          )
+          right center/cover no-repeat;
     }
-    
+
     @media (max-width: 640px) {
       width: 100%;
-      background: 
+      background:
         linear-gradient(
           135deg,
           rgba($color-white, 0.98) 0%,
@@ -56,11 +63,14 @@
           rgba($color-white, 0.65) 100%
         ),
         image-set(
-          url('../../assets/images/profile/dubai-2287738_640.webp') type('image/webp'),
-          url('../../assets/images/profile/dubai-2287738_640.jpg') type('image/jpeg')
-        ) center/cover no-repeat;
+            url("../../assets/images/profile/dubai-2287738_640.webp")
+              type("image/webp"),
+            url("../../assets/images/profile/dubai-2287738_640.jpg")
+              type("image/jpeg")
+          )
+          center/cover no-repeat;
       opacity: 1;
-      
+
       @media (prefers-reduced-motion: no-preference) {
         transform: translateZ(0);
         will-change: transform;
@@ -69,240 +79,119 @@
     }
   }
 
-
-@keyframes subtleParallax {
-  from {
-    background-position: center;
-  }
-  to {
-    background-position: center 10%;
-  }
-}
-
-.profileForm {
-  width: 100%;
-  max-width: clamp(20rem, 90vw, 70rem);
-  margin: 0 auto;
-  background: rgba($color-black, 0.8);
-  padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-  border-radius: $border-radius-lg;
-  border: 1px solid rgba($color-primary, 0.1);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba($color-black, 0.2);
-  overflow-x: hidden;
-  overflow-y: auto;
-  max-height: 90vh;
-
-  @media (min-width: 768px) {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-
-    h2 {
-      grid-column: 1 / -1;
+  @keyframes subtleParallax {
+    from {
+      background-position: center;
     }
+    to {
+      background-position: center 10%;
+    }
+  }
 
-    .section {
-      &:nth-child(2) { // Basic Information
+  .profileForm {
+    width: 100%;
+    max-width: clamp(20rem, 90vw, 70rem);
+    margin: 0 auto;
+    background: rgba($color-black, 0.8);
+    padding: clamp(0.5rem, -2rem + 8vw, 2.5rem);
+    border-radius: $border-radius-lg;
+    border: 1px solid rgba($color-primary, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba($color-black, 0.2);
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 90vh;
+
+    @media (min-width: 768px) {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+
+      h2 {
         grid-column: 1 / -1;
       }
-    }
-  }
 
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(3, 1fr);
-
-    .section {
-      &:nth-child(2) { // Basic Information
-        grid-column: 1 / -1;
-      }
-    }
-  }
-
-  h2 {
-    color: $color-white;
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: clamp(1.2rem, 0.2rem + 3.2vw, 2rem);
-    letter-spacing: 2px;
-  }
-
-  // Scrollbar styling
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: rgba($color-white, 0.1);
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba($color-primary, 0.5);
-    border-radius: 4px;
-    
-    &:hover {
-      background: $color-primary;
-    }
-  }
-}
-
-.section {
-  margin-bottom: 2rem;
-  background: rgba($color-black, 0.3);
-  padding: 1.5rem;
-  border-radius: $border-radius-md;
-  border: 1px solid rgba($color-white, 0.1);
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: rgba($color-black, 0.4);
-    border-color: rgba($color-primary, 0.2);
-  }
-
-  h3 {
-    margin-bottom: 1rem;
-    color: $color-white;
-    font-size: clamp(1rem, 0.8rem + 1vw, 1.2rem);
-    opacity: 0.9;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    &::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba($color-white, 0.2);
-    }
-  }
-}
-
-.formGroup {
-  margin-bottom: 1.5rem;
-  position: relative;
-
-  .floatingLabel {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba($color-white, 0.5);
-    pointer-events: none;
-    transition: all 0.2s ease;
-    font-size: 1rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 10px;
-    border: 1px solid transparent;
-  }
-
-  .helpText {
-    position: absolute;
-    left: 0;
-    bottom: -1.2rem;
-    font-size: 0.8rem;
-    color: $color-primary;
-    opacity: 0.8;
-    transition: all 0.2s ease;
-  }
-
-  input {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    background: rgba($color-white, 0.05);
-    border: 1px solid rgba($color-white, 0.1);
-    border-radius: $border-radius-sm;
-    color: $color-white;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-
-    &:focus,
-    &:not(:placeholder-shown) {
-      & + .floatingLabel {
-        top: 0;
-        font-size: 0.8rem;
-        color: $color-primary;
-        background: #3c3c3c;
-        border: 1px solid rgba($color-primary, 0.5);
-      }
-    }
-
-    &::placeholder {
-      color: transparent;
-    }
-
-    &:focus {
-      outline: none;
-      border-color: rgba($color-primary, 0.5);
-    }
-
-    &.error {
-      border-color: $color-error-border;
-      animation: shake 0.5s ease-in-out;
-    }
-  }
-
-  select {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    background: rgba($color-white, 0.05);
-    border: 1px solid rgba($color-white, 0.1);
-    border-radius: $border-radius-sm;
-    color: $color-white;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    
-    &:focus {
-      outline: none;
-      border-color: rgba($color-primary, 0.5);
-    }
-
-    option {
-      background: #3c3c3c;
-      color: $color-white;
-    }
-  }
-}
-
-.formGroupWithButton {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-
-  .inputWrapper {
-    flex: 1;
-    position: relative;
-
-    input {
-      width: 100%;
-      padding: 0.8rem 1rem;
-      background: rgba($color-white, 0.05);
-      border: 1px solid rgba($color-white, 0.1);
-      border-radius: $border-radius-sm;
-      color: $color-white;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-
-      &::placeholder {
-        color: transparent;
-      }
-
-      &:focus {
-        outline: none;
-        border-color: rgba($color-primary, 0.5);
-      }
-
-      &:focus,
-      &:not(:placeholder-shown) {
-        & + .floatingLabel {
-          top: 0;
-          font-size: 0.8rem;
-          color: $color-primary;
-          background: #3c3c3c;
-          border: 1px solid rgba($color-primary, 0.5);
+      .section {
+        &:nth-child(2) {
+          // Basic Information
+          grid-column: 1 / -1;
         }
       }
     }
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+
+      .section {
+        &:nth-child(2) {
+          // Basic Information
+          grid-column: 1 / -1;
+        }
+      }
+    }
+
+    h2 {
+      color: $color-white;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: clamp(1.1rem, -0.025rem + 3.6vw, 2rem);
+      // letter-spacing: 2px;
+    }
+
+    // Scrollbar styling
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba($color-white, 0.1);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba($color-primary, 0.5);
+      border-radius: 4px;
+
+      &:hover {
+        background: $color-primary;
+      }
+    }
+  }
+
+  .section {
+    margin-bottom: 2rem;
+    background: rgba($color-black, 0.3);
+    padding: clamp(0.5rem, -0.75rem + 4vw, 1.5rem);
+    border-radius: $border-radius-md;
+    border: 1px solid rgba($color-white, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba($color-black, 0.4);
+      border-color: rgba($color-primary, 0.2);
+    }
+
+    h3 {
+      margin-bottom: 1rem;
+      color: $color-white;
+      font-size: clamp(0.9rem, 0.525rem + 1.2vw, 1.2rem);
+      opacity: 0.9;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: rgba($color-white, 0.2);
+      }
+    }
+  }
+
+  .formGroup {
+    margin-bottom: 1.5rem;
+    position: relative;
 
     .floatingLabel {
       position: absolute;
@@ -316,193 +205,227 @@
       padding: 0.2rem 0.5rem;
       border-radius: 10px;
       border: 1px solid transparent;
-      z-index: 1;
+    }
+
+    .helpText {
+      position: absolute;
+      left: 0;
+      bottom: -1.2rem;
+      font-size: 0.8rem;
+      color: $color-primary;
+      opacity: 0.8;
+      transition: all 0.2s ease;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: rgba($color-white, 0.05);
+      border: 1px solid rgba($color-white, 0.1);
+      border-radius: $border-radius-sm;
+      color: $color-white;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+
+      &:focus,
+      &:not(:placeholder-shown) {
+        & + .floatingLabel {
+          top: 0;
+          font-size: 0.8rem;
+          color: $color-primary;
+          background: #3c3c3c;
+          border: 1px solid rgba($color-primary, 0.5);
+        }
+      }
+
+      &::placeholder {
+        color: transparent;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: rgba($color-primary, 0.5);
+      }
+
+      &.error {
+        border-color: $color-error-border;
+        animation: shake 0.5s ease-in-out;
+      }
+    }
+
+    select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: rgba($color-white, 0.05);
+      border: 1px solid rgba($color-white, 0.1);
+      border-radius: $border-radius-sm;
+      color: $color-white;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+
+      &:focus {
+        outline: none;
+        border-color: rgba($color-primary, 0.5);
+      }
+
+      option {
+        background: #3c3c3c;
+        color: $color-white;
+      }
     }
   }
 
-  .updateButton {
-    padding: 0.75rem 1rem;
-    background: rgba($color-primary, 0.8);
-    color: $color-white;
-    border: none;
-    border-radius: $border-radius-sm;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.3s ease;
+  .formGroupWithButton {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 
-    &:disabled {
-      background: rgba($color-white, 0.1);
-      cursor: not-allowed;
+    .inputWrapper {
+      flex: 1;
+      position: relative;
+
+      input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        background: rgba($color-white, 0.05);
+        border: 1px solid rgba($color-white, 0.1);
+        border-radius: $border-radius-sm;
+        color: $color-white;
+        // letter-spacing: 1px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+
+        &::placeholder {
+          color: transparent;
+        }
+
+        &:focus {
+          outline: none;
+          border-color: rgba($color-primary, 0.5);
+        }
+
+        &:focus,
+        &:not(:placeholder-shown) {
+          & + .floatingLabel {
+            top: 0;
+            font-size: 0.8rem;
+            color: $color-primary;
+            background: #3c3c3c;
+            border: 1px solid rgba($color-primary, 0.5);
+          }
+        }
+      }
+
+      .floatingLabel {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba($color-white, 0.5);
+        pointer-events: none;
+        transition: all 0.2s ease;
+        font-size: clamp(0.8rem, 0.55rem + 0.8vw, 1rem);
+        padding: 0.2rem 0.5rem;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        z-index: 1;
+      }
     }
-
-    &:hover:not(:disabled) {
-      background: $color-primary;
-      transform: translateY(-1px);
-    }
-  }
-
-  @media (max-width: 640px) {
-    flex-direction: column;
-    gap: 0.5rem;
 
     .updateButton {
-      width: 100%;
-    }
-  }
-}
+      padding: 0.6rem 1rem;
+      background: rgba($color-primary, 0.8);
+      color: $color-white;
+      border: none;
+      border-radius: $border-radius-sm;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.3s ease;
 
-.checkboxLabel {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  color: rgba($color-white, 0.8);
-  font-size: 0.9rem;
-  padding: 0.5rem;
-  border-radius: $border-radius-sm;
-  transition: all 0.3s ease;
-  user-select: none;
-
-  &:hover {
-    color: $color-white;
-    background: rgba($color-white, 0.05);
-  }
-
-  input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba($color-primary, 0.5);
-    border-radius: 4px;
-    background: rgba($color-white, 0.05);
-    cursor: pointer;
-    position: relative;
-    transition: all 0.2s ease;
-
-    &:hover {
-      border-color: $color-primary;
-      background: rgba($color-white, 0.08);
-    }
-
-    &:checked {
-      background: $color-primary;
-      border-color: $color-primary;
-
-      &::after {
-        content: '';
-        position: absolute;
-        left: 50%;
-        top: 40%;
-        width: 8px;
-        height: 12px;
-        border: solid $color-white;
-        border-width: 0 2px 2px 0;
-        transform: translate(-50%, -50%) rotate(45deg);
+      &:disabled {
+        background: rgba($color-white, 0.1);
+        cursor: not-allowed;
       }
 
-      &:hover {
-        background: rgba($color-primary, 0.2);
+      &:hover:not(:disabled) {
+        background: $color-primary;
+        transform: translateY(-1px);
       }
     }
 
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px rgba($color-primary, 0.2);
+    @media (max-width: 640px) {
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .updateButton {
+        width: 100%;
+      }
     }
   }
-}
 
-.submitButton {
-  width: 100%;
-  padding: 1rem;
-  background: rgba($color-primary, 0.8);
-  color: $color-white;
-  border: none;
-  border-radius: $border-radius-sm;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:disabled {
-    background: rgba($color-white, 0.1);
-    cursor: not-allowed;
-  }
-
-  &:hover:not(:disabled) {
-    background: $color-primary;
-  }
-}
-
-.dangerZone {
-  grid-column: 1 / -1;
-  margin-top: 3rem;
-  padding: 2rem;
-  background: rgba($color-black, 0.3);
-  border-radius: $border-radius-lg;
-  border: 1px solid rgba($color-primary, 0.1);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: rgba($color-black, 0.4);
-    border-color: rgba($color-primary, 0.2);
-  }
-  
-  &::before {
-    content: '🔒';
-    position: absolute;
-    top: -2rem;
-    right: -2rem;
-    font-size: 8rem;
-    opacity: 0.1;
-    transform: rotate(15deg);
-  }
-
-  h3 {
-    color: $color-white;
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+  .checkboxLabel {
     display: flex;
     align-items: center;
-    gap: 1rem;
-
-    &::before {
-      content: '';
-      width: 4px;
-      height: 1.5rem;
-      background: $color-primary;
-      border-radius: 2px;
-    }
-  }
-
-  p {
-    color: $color-white;
-    opacity: 0.8;
-    margin-bottom: 2rem;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: rgba($color-white, 0.8);
     font-size: 0.9rem;
-    line-height: 1.6;
-  }
-
-  input {
-    width: 100%;
-    padding: 1rem;
-    background: rgba($color-white, 0.05);
-    border: 1px solid rgba($color-white, 0.1);
+    padding: 0.5rem;
     border-radius: $border-radius-sm;
-    color: $color-white;
-    margin-bottom: 1.5rem;
     transition: all 0.3s ease;
+    user-select: none;
 
-    &:focus {
-      outline: none;
-      border-color: rgba($color-primary, 0.5);
-      background: rgba($color-white, 0.08);
+    &:hover {
+      color: $color-white;
+      background: rgba($color-white, 0.05);
+    }
+
+    input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba($color-primary, 0.5);
+      border-radius: 4px;
+      background: rgba($color-white, 0.05);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: $color-primary;
+        background: rgba($color-white, 0.08);
+      }
+
+      &:checked {
+        background: $color-primary;
+        border-color: $color-primary;
+
+        &::after {
+          content: "";
+          position: absolute;
+          left: 50%;
+          top: 40%;
+          width: 8px;
+          height: 12px;
+          border: solid $color-white;
+          border-width: 0 2px 2px 0;
+          transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        &:hover {
+          background: rgba($color-primary, 0.2);
+        }
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba($color-primary, 0.2);
+      }
     }
   }
 
-  .deleteButton {
+  .submitButton {
     width: 100%;
     padding: 1rem;
     background: rgba($color-primary, 0.8);
@@ -512,53 +435,100 @@
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        45deg,
-        transparent 0%,
-        rgba($color-white, 0.1) 50%,
-        transparent 100%
-      );
-      transform: translateX(-100%);
-      transition: transform 0.6s ease;
+    &:disabled {
+      background: rgba($color-white, 0.1);
+      cursor: not-allowed;
     }
 
-    &:hover {
+    &:hover:not(:disabled) {
       background: $color-primary;
-      transform: translateY(-1px);
-
-      &::before {
-        transform: translateX(100%);
-      }
     }
   }
 
-  .deleteActions {
-    display: flex;
-    gap: 1rem;
+  .dangerZone {
+    grid-column: 1 / -1;
+    margin-top: 3rem;
+    padding: 2rem;
+    background: rgba($color-black, 0.3);
+    border-radius: $border-radius-lg;
+    border: 1px solid rgba($color-primary, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
 
-    button {
-      flex: 1;
+    &:hover {
+      background: rgba($color-black, 0.4);
+      border-color: rgba($color-primary, 0.2);
+    }
+
+    &::before {
+      content: "🔒";
+      position: absolute;
+      top: -2rem;
+      right: -2rem;
+      font-size: 8rem;
+      opacity: 0.1;
+      transform: rotate(15deg);
+    }
+
+    h3 {
+      color: $color-white;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      &::before {
+        content: "";
+        width: 4px;
+        height: 1.5rem;
+        background: $color-primary;
+        border-radius: 2px;
+      }
+    }
+
+    p {
+      color: $color-white;
+      opacity: 0.8;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    input {
+      width: 100%;
       padding: 1rem;
+      background: rgba($color-white, 0.05);
+      border: 1px solid rgba($color-white, 0.1);
+      border-radius: $border-radius-sm;
+      color: $color-white;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+
+      &:focus {
+        outline: none;
+        border-color: rgba($color-primary, 0.5);
+        background: rgba($color-white, 0.08);
+      }
+    }
+
+    .deleteButton {
+      width: 100%;
+      padding: 1rem;
+      background: rgba($color-primary, 0.8);
+      color: $color-white;
       border: none;
       border-radius: $border-radius-sm;
-      font-weight: 500;
+      font-size: 1rem;
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
 
       &::before {
-        content: '';
+        content: "";
         position: absolute;
         top: 0;
         left: 0;
@@ -574,73 +544,116 @@
         transition: transform 0.6s ease;
       }
 
-      &:hover::before {
-        transform: translateX(100%);
-      }
-    }
-
-    .confirmDeleteButton {
-      background: rgba($color-primary, 0.8);
-      color: $color-white;
-
-      &:hover:not(:disabled) {
+      &:hover {
         background: $color-primary;
         transform: translateY(-1px);
-      }
 
-      &:disabled {
-        background: rgba($color-white, 0.1);
-        cursor: not-allowed;
-      }
-    }
-
-    .cancelButton {
-      background: rgba($color-white, 0.1);
-      color: $color-white;
-      backdrop-filter: blur(5px);
-
-      &:hover {
-        background: rgba($color-white, 0.2);
-        transform: translateY(-1px);
+        &::before {
+          transform: translateX(100%);
+        }
       }
     }
-  }
 
-  @media (max-width: 640px) {
-    padding: 1.5rem;
-    
     .deleteActions {
-      flex-direction: column;
-      
+      display: flex;
+      gap: 1rem;
+
       button {
-        width: 100%;
-        
-        &:last-child {
-          margin-top: 0.5rem;
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        border-radius: $border-radius-sm;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            45deg,
+            transparent 0%,
+            rgba($color-white, 0.1) 50%,
+            transparent 100%
+          );
+          transform: translateX(-100%);
+          transition: transform 0.6s ease;
+        }
+
+        &:hover::before {
+          transform: translateX(100%);
+        }
+      }
+
+      .confirmDeleteButton {
+        background: rgba($color-primary, 0.8);
+        color: $color-white;
+
+        &:hover:not(:disabled) {
+          background: $color-primary;
+          transform: translateY(-1px);
+        }
+
+        &:disabled {
+          background: rgba($color-white, 0.1);
+          cursor: not-allowed;
+        }
+      }
+
+      .cancelButton {
+        background: rgba($color-white, 0.1);
+        color: $color-white;
+        backdrop-filter: blur(5px);
+
+        &:hover {
+          background: rgba($color-white, 0.2);
+          transform: translateY(-1px);
+        }
+      }
+    }
+
+    @media (max-width: 640px) {
+      padding: 1.5rem;
+
+      .deleteActions {
+        flex-direction: column;
+
+        button {
+          width: 100%;
+
+          &:last-child {
+            margin-top: 0.5rem;
+          }
         }
       }
     }
   }
-}
 
-// Animation d'entrée pour les sections
-@keyframes fadeInSlide {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.section {
-  animation: fadeInSlide 0.5s ease-out forwards;
-  
-  @for $i from 1 through 6 {
-    &:nth-child(#{$i}) {
-      animation-delay: #{$i * 0.1}s;
+  // Animation d'entrée pour les sections
+  @keyframes fadeInSlide {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
-}}
+
+  .section {
+    animation: fadeInSlide 0.5s ease-out forwards;
+
+    @for $i from 1 through 6 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.1}s;
+      }
+    }
+  }
+}

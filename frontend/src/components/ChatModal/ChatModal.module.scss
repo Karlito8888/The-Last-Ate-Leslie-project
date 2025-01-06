@@ -16,9 +16,13 @@
   }
 
   @media (max-width: 480px) {
-    bottom: 1rem;
-    right: 1rem;
-    // left: 1rem;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
   }
   
   .chatButton {
@@ -38,6 +42,9 @@
     animation-delay: 3s;
 
     @media (max-width: 480px) {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
       width: 3rem;
       height: 3rem;
     }
@@ -81,6 +88,7 @@
       right: 0;
       bottom: 0;
       border-radius: 0;
+      margin: 0;
       animation: slideUpFullscreen 0.3s ease-out forwards;
     }
 
@@ -247,30 +255,26 @@
       .submitButton {
         width: 100%;
         padding: 0.75rem;
-        background: linear-gradient(135deg, #C6A355 0%, #AD8A3B 100%);
-        color: $color-white;
+        background: $color-primary;
+        color: white;
         border: none;
-        border-radius: 0.25rem;
-        font-family: inherit;
+        border-radius: 4px;
         font-size: 0.9rem;
-        font-weight: 500;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
+        margin-top: 0.5rem;
 
-        @media (max-width: 480px) {
-          padding: 1rem;
-          font-size: 1rem;
-          margin-top: auto;
-        }
-
-        &:hover:not(:disabled) {
-          background: linear-gradient(135deg, #AD8A3B 0%, #C6A355 100%);
-          transform: translateY(-1px);
+        &:hover {
+          background: $color-primary-dark;
         }
 
         &:disabled {
-          opacity: 0.7;
+          background: #ccc;
           cursor: not-allowed;
+          
+          &:hover {
+            background: #ccc;
+          }
         }
       }
 
