@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import './styles/globals/_toast.scss'
 import styles from './App.module.scss'
 import Footer from './components/Footer/Footer'
+import { useScrollTop } from './hooks/useScrollTop'
 
 const App: React.FC = () => {
   const [isFirstVisit, setIsFirstVisit] = useState<boolean>(true)
@@ -26,6 +27,8 @@ const App: React.FC = () => {
       setIsFirstVisit(false)
     }
   }, [])
+
+  useScrollTop();
 
   return (
     <div className={styles.app}>

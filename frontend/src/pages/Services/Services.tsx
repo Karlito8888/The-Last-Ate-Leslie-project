@@ -74,15 +74,9 @@ interface CatalogInfo {
 const catalogs: CatalogInfo[] = [
   {
     id: 1,
-    title: "National Day Special",
-    description: "Discover our exclusive collection for national celebrations.",
-    path: "/pdf/catalogs/National_Day_Catalogue.pdf"
-  },
-  {
-    id: 2,
-    title: "Ramadan Gifts",
-    description: "Browse our special Ramadan gift selection.",
-    path: "/pdf/catalogs/Ramadan_Gifts.pdf"
+    title: "Creative Vision International",
+    description: "Explore our complete range of products and services.",
+    path: "/pdf/catalogs/CreativeVisionInt.pdf"
   }
 ];
 
@@ -92,7 +86,6 @@ const Services: React.FC = () => {
   const [selectedCatalog, setSelectedCatalog] = useState<CatalogInfo | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
-  const [scale, setScale] = useState(1);
 
   const handleCatalogClick = (catalog: CatalogInfo, e: React.MouseEvent) => {
     e.preventDefault();
@@ -116,10 +109,6 @@ const Services: React.FC = () => {
       return Math.min(Math.max(1, newPageNumber), numPages || 1);
     });
   };
-
-  const handleZoomIn = () => setScale(prev => Math.min(prev + 0.2, 2));
-  const handleZoomOut = () => setScale(prev => Math.max(prev - 0.2, 0.6));
-  const handleResetZoom = () => setScale(1);
 
   return (
     <div className={styles.servicesContent}>
@@ -191,36 +180,13 @@ const Services: React.FC = () => {
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h3>{selectedCatalog.title}</h3>
-              <div className={styles.controls}>
-                <button 
-                  className={styles.controlButton} 
-                  onClick={handleZoomOut}
-                  title="Zoom out"
-                >
-                  -
-                </button>
-                <button 
-                  className={styles.controlButton} 
-                  onClick={handleResetZoom}
-                  title="Reset zoom"
-                >
-                  100%
-                </button>
-                <button 
-                  className={styles.controlButton} 
-                  onClick={handleZoomIn}
-                  title="Zoom in"
-                >
-                  +
-                </button>
-                <button 
-                  className={styles.closeButton} 
-                  onClick={handleCloseModal}
-                  title="Close"
-                >
-                  ×
-                </button>
-              </div>
+              <button 
+                className={styles.closeButton} 
+                onClick={handleCloseModal}
+                title="Close"
+              >
+                ×
+              </button>
             </div>
             <div className={styles.modalContent}>
               <Document
@@ -235,7 +201,6 @@ const Services: React.FC = () => {
               >
                 <Page
                   pageNumber={pageNumber}
-                  scale={scale}
                   loading={
                     <div className={styles.loading}>
                       <div className={styles.spinner}></div>

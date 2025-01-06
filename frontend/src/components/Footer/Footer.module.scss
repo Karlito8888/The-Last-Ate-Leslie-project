@@ -1,11 +1,12 @@
 @use "../../styles/globals/variables" as *;
 @use "../../styles/globals/mixins" as *;
 
+// Main Footer Container
 .footer {
   background: linear-gradient(to right, #1a1a1a, #2a2a2a);
   color: $color-white;
   padding: 4rem 0 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 
   @media (max-width: 768px) {
     padding: 3rem 0 0;
@@ -14,81 +15,95 @@
   @media (max-width: 375px) {
     padding: 2rem 0 0;
   }
-}
 
-.footerContent {
-  max-width: 1200px;
-  margin: 0 auto;
-padding-left: clamp(3.75rem, 2.9688rem + 2.5vw, 4.375rem);
-padding-right: clamp(0.625rem, -0.1563rem + 2.5vw, 1.25rem);
-}
-
-.footerGrid {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 3rem;
-}
-
-.footerSection {
-  width: 100%;
-  max-width: 1200px;
-  
-  h3 {
-    color: #C6A355;
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    position: relative;
-    padding-bottom: 0.75rem;
-    text-align: center;
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 50px;
-      height: 2px;
-      background: linear-gradient(135deg, #C6A355 0%, #AD8A3B 100%);
-    }
-
-    @media (max-width: 375px) {
-      font-size: 1.1rem;
-      margin-bottom: 1.25rem;
-    }
-  }
-}
-
-.contactInfo {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  justify-items: start;
-  
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    justify-items: center !important;
-  }
-  
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(3, 1fr);
-    justify-items: center !important;
+  // Footer Content Container
+  .footerContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: clamp(3.75rem, 2.9688rem + 2.5vw, 4.375rem);
+    padding-right: clamp(0.625rem, -0.1563rem + 2.5vw, 1.25rem);
   }
 
-  .contactItem {
+  // Footer Grid Layout
+  .footerGrid {
     display: flex;
-    align-items: flex-start;
+    justify-content: center;
+    margin-bottom: 3rem;
+  }
+
+  // Footer Section with Heading
+  .footerSection {
+    width: 100%;
+    max-width: 1200px;
+
+    h3 {
+      color: #c6a355;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-bottom: 0.75rem;
+      text-align: center;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 2px;
+        background: linear-gradient(135deg, #c6a355 0%, #ad8a3b 100%);
+      }
+
+      @media (max-width: 375px) {
+        font-size: 1.1rem;
+        margin-bottom: 1.25rem;
+      }
+    }
+  }
+
+  // Contact Information Grid
+  .contactInfo {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    justify-items: start;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+      justify-items: center !important;
+    }
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+      justify-items: center !important;
+    }
+  }
+
+  // Contact Item Styles
+  .contactItem {
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 1rem;
     justify-content: center;
     text-align: left;
 
+    // Special styling for the phone/whatsapp contact item
+    &:nth-child(2) {
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 1rem;
+    }
+
+    // Icon styles for regular icons (not in buttons)
     .icon {
-      color: #C6A355;
+      color: #c6a355;
       font-size: 1.2rem;
       margin-top: 0.25rem;
     }
 
+    // Paragraph styles
     p {
       margin: 0;
       line-height: 1.6;
@@ -96,10 +111,11 @@ padding-right: clamp(0.625rem, -0.1563rem + 2.5vw, 1.25rem);
       color: rgba(255, 255, 255, 0.9);
     }
 
-    a {
-      color: #C6A355;
+    // Link styles for regular links (not buttons)
+    a:not(.contactLink) {
+      color: #c6a355;
       text-decoration: none;
-      transition: color 0.3s ease;
+      transition: color 0.2s ease;
       font-size: 0.95rem;
 
       &:hover {
@@ -107,35 +123,84 @@ padding-right: clamp(0.625rem, -0.1563rem + 2.5vw, 1.25rem);
       }
     }
   }
-}
 
-.copyrightBar {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1.5rem 0;
-  text-align: center;
-
-  p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.7);
+  // Contact Buttons Container
+  .contactButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 120px;
   }
 
-  @media (max-width: 375px) {
-    padding: 1.25rem 0;
-    
+  // Individual Contact Button Link
+  .contactLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(198, 163, 85, 0.1);
+    color: #c6a355;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    svg {
+      font-size: 1.2rem;
+      margin-top: 0 !important;
+      fill: currentColor;
+      transition: fill 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    &:hover {
+      background-color: #c6a355;
+      
+      svg {
+        fill: #333333;
+      }
+      transform: translateY(-2px);
+    }
+  }
+
+  // Phone Number Display
+  .phoneNumber {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    text-align: center;
+  }
+
+  // Copyright Bar
+  .copyrightBar {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem 0;
+    text-align: center;
+
     p {
-      font-size: 0.85rem;
+      margin: 0;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    @media (max-width: 375px) {
+      padding: 1.25rem 0;
+
+      p {
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  // Animations
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-} 

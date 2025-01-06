@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
 import { JWT_CONFIG } from '../config/jwt';
 
-// Déclaration pour étendre Request
+// Declaration to extend Request
 declare global {
   namespace Express {
     interface Request {
@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-// Middleware d'authentification
+// Authentication middleware
 export const protect = (req: Request, res: Response, next: NextFunction): Response | void => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
@@ -22,7 +22,7 @@ export const protect = (req: Request, res: Response, next: NextFunction): Respon
     if (!token) {
       return res.status(401).json({ 
         success: false,
-        message: 'Non autorisé'
+        message: 'Unauthorized'
       });
     }
 
@@ -32,12 +32,12 @@ export const protect = (req: Request, res: Response, next: NextFunction): Respon
   } catch (error) {
     return res.status(401).json({ 
       success: false,
-      message: 'Non autorisé'
+      message: 'Unauthorized'
     });
   }
 };
 
-// Middleware de vérification admin
+// Admin verification middleware
 export const isAdmin = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
     const user = await User.findById(req.user.id);
@@ -45,7 +45,7 @@ export const isAdmin = async (req: Request, res: Response, next: NextFunction): 
     if (!user?.role || user.role !== 'admin') {
       return res.status(403).json({ 
         success: false,
-        message: 'Accès non autorisé'
+        message: 'Access forbidden'
       });
     }
 
@@ -53,7 +53,7 @@ export const isAdmin = async (req: Request, res: Response, next: NextFunction): 
   } catch (error) {
     return res.status(500).json({ 
       success: false,
-      message: 'Erreur serveur'
+      message: 'Server error'
     });
   }
 }; 

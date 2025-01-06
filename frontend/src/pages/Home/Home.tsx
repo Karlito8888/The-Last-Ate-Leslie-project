@@ -18,17 +18,24 @@ const Home: React.FC = () => {
 
       <section className={styles.about}>
         <p className={styles.introduction}>
-          Dynamic Vision Global is a creative agency that specializes in PR and marketing. We are a team of creative minds that are passionate about what we do.
+        Creative Vision is one of the premier exhibition companies in Dubai, Riyadh, and throughout the GCC.
         </p>
         <p className={styles.approach}>
-          We provide your sales team their needs for selling activities through our marketing approach and branding that will create opportunities and platforms for a better sales turnover.
+        Our expertise lies in creating custom booth displays and fabrications for exhibitions including corporate gifts and other marketing paraphernalia.
         </p>
       </section>
 
       <section className={styles.callToAction}>
         <strong className={styles.highlight}>
-          TAKE A LOOK AT OUR PROJECTS. IMAGINE THE ENTIRE PROCESS OF THEIR
-          CREATION. INVESTIGATE, EXPERIENCE THEM. BE INSPIRED.
+        Design, Layout planning, Interior Fit out for Showrooms,<br />
+        Exhibition Stands, Kiosks, Offices, Restaurants.<br />
+        Additionally design and manufacture shop fittings.
+        </strong>
+        <br />
+        <strong className={styles.highlight}>
+        Visual merchandising solutions,<br />
+        Window Display and merchandising implementation.<br />
+        Additionally design and manufacture shop fittings.
         </strong>
       </section>
 

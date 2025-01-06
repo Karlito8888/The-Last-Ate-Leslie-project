@@ -156,7 +156,7 @@ const userSchema = new mongoose.Schema({
       validator: function(v: string) {
         return !v || isValidMobilePhone(v);
       },
-      message: 'Format de numéro de mobile invalide. Format attendu : +971-XX-XXXXXXX'
+      message: 'Invalid mobile phone format. Expected format: +971-XX-XXXXXXX'
     }
   },
   landline: {
@@ -166,7 +166,7 @@ const userSchema = new mongoose.Schema({
       validator: function(v: string) {
         return !v || isValidLandline(v);
       },
-      message: 'Format de numéro fixe invalide. Format attendu : +971-X-XXXXXXX'
+      message: 'Invalid landline format. Expected format: +971-X-XXXXXXX'
     }
   },
   address: {
@@ -185,7 +185,7 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Méthode virtuelle pour obtenir le nom complet formaté
+// Virtual method to get formatted full name
 userSchema.virtual('formattedFullName').get(function(this: IUser) {
   if (!this.fullName) return '';
   
@@ -198,12 +198,12 @@ userSchema.virtual('formattedFullName').get(function(this: IUser) {
     firstName,
     `${prefix} ${fatherName}`,
     familyName
-  ].filter(Boolean); // Supprime les valeurs undefined/null
+  ].filter(Boolean); // Remove undefined/null values
   
   return parts.join(' ');
 });
 
-// Hash le mot de passe avant la sauvegarde
+// Hash password before saving
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   
@@ -216,7 +216,7 @@ userSchema.pre('save', async function(next) {
   }
 });
 
-// Méthode pour comparer les mots de passe
+// Method to compare passwords
 userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };

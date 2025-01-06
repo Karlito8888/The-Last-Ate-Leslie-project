@@ -7,7 +7,7 @@ import { getNewsletterTemplate } from '../templates/newsletter';
 
 const transporter = nodemailer.createTransport(EMAIL_CONFIG);
 
-// Obtenir la liste des utilisateurs
+// Get users list
 export const getUsers = async (_req: Request, res: Response): Promise<Response> => {
   try {
     const users = await User.find().select('-password');
@@ -16,15 +16,15 @@ export const getUsers = async (_req: Request, res: Response): Promise<Response> 
       data: users
     });
   } catch (error) {
-    console.error('Erreur lors de la récupération des utilisateurs:', error);
+    console.error('Error while retrieving users:', error);
     return res.status(500).json({
       success: false,
-      message: 'Erreur lors de la récupération des utilisateurs'
+      message: 'Error while retrieving users'
     });
   }
 };
 
-// Envoyer une newsletter
+// Send newsletter
 export const sendNewsletter = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { subject, content } = req.body;
@@ -37,33 +37,33 @@ export const sendNewsletter = async (req: Request, res: Response): Promise<Respo
       });
     }
 
-    // Récupérer les utilisateurs inscrits à la newsletter
+    // Get newsletter subscribers
     const subscribers = await User.find({ newsletter: true }).select('email');
     const recipientEmails = subscribers.map(user => user.email);
 
     if (recipientEmails.length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'Aucun utilisateur inscrit à la newsletter'
+        message: 'No users subscribed to the newsletter'
       });
     }
 
-    // Générer le HTML avec le template
+    // Generate HTML with template
     const htmlContent = getNewsletterTemplate(subject, content);
 
-    // Envoi de la newsletter
+    // Send newsletter
     await transporter.sendMail({
       from: EMAIL_CONFIG.from,
-      bcc: recipientEmails, // Utilisation de BCC pour la confidentialité
+      bcc: recipientEmails, // Using BCC for privacy
       subject: subject,
       html: htmlContent,
-      text: content // Version texte pour les clients qui ne supportent pas le HTML
+      text: content // Text version for clients that don't support HTML
     });
 
-    // Sauvegarder la newsletter dans la base de données
+    // Save newsletter in database
     await Newsletter.create({
       subject,
-      content: htmlContent, // On sauvegarde la version HTML complète
+      content: htmlContent, // Save complete HTML version
       sentBy: req.user.id,
       recipientCount: recipientEmails.length,
       recipients: recipientEmails
@@ -71,22 +71,22 @@ export const sendNewsletter = async (req: Request, res: Response): Promise<Respo
 
     return res.status(200).json({
       success: true,
-      message: 'Newsletter envoyée avec succès',
+      message: 'Newsletter sent successfully',
       data: {
         recipientCount: recipientEmails.length
       }
     });
 
   } catch (error) {
-    console.error('Erreur lors de l\'envoi de la newsletter:', error);
+    console.error('Error while sending newsletter:', error);
     return res.status(500).json({
       success: false,
-      message: 'Erreur lors de l\'envoi de la newsletter'
+      message: 'Error while sending newsletter'
     });
   }
 };
 
-// Obtenir l'historique des newsletters
+// Get newsletter history
 export const getNewsletterHistory = async (req: Request, res: Response): Promise<Response> => {
   try {
     const page = parseInt(req.query.page as string || '1');
@@ -113,10 +113,10 @@ export const getNewsletterHistory = async (req: Request, res: Response): Promise
       }
     });
   } catch (error) {
-    console.error('Erreur lors de la récupération de l\'historique:', error);
+    console.error('Error while retrieving newsletter history:', error);
     return res.status(500).json({
       success: false,
-      message: 'Erreur lors de la récupération de l\'historique'
+      message: 'Error while retrieving newsletter history'
     });
   }
 }; 

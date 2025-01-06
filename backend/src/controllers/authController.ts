@@ -26,7 +26,7 @@ const formatUserResponse = (user: any): UserResponse => {
     email: user.email
   };
 
-  // Ajout conditionnel des champs optionnels
+  // Optional fields conditional addition
   if (user.role) response.role = user.role;
   if (user.newsletter !== undefined) response.newsletter = user.newsletter;
   if (user.fullName) response.fullName = user.fullName;
@@ -45,23 +45,23 @@ export const register = async (req: Request, res: Response<ApiResponse<AuthRespo
     const errors: string[] = [];
 
     if (!username || !email || !password) {
-      return handleError(res, 400, 'Username, email et mot de passe sont requis');
+      return handleError(res, 400, 'Username, email and password are required');
     }
 
     if (!isUsernameValid(username)) {
-      errors.push('Le nom d\'utilisateur doit contenir entre 3 et 50 caractères et uniquement des lettres, chiffres, tirets et underscores');
+      errors.push('Username must be between 3 and 50 characters and contain only letters, numbers, dashes and underscores');
     }
 
     if (!AUTH_CONSTANTS.EMAIL_REGEX.test(email)) {
-      errors.push('Format d\'email invalide');
+      errors.push('Invalid email format');
     }
 
     if (!isPasswordValid(password)) {
-      errors.push('Le mot de passe doit contenir au moins 8 caractères, une majuscule et un caractère spécial');
+      errors.push('Password must contain at least 8 characters, one uppercase letter and one special character');
     }
 
     if (errors.length > 0) {
-      return handleError(res, 400, 'Données d\'inscription invalides', errors);
+      return handleError(res, 400, 'Invalid registration data', errors);
     }
 
     const existingUser = await User.findOne({
@@ -69,7 +69,7 @@ export const register = async (req: Request, res: Response<ApiResponse<AuthRespo
     });
 
     if (existingUser) {
-      return handleError(res, 400, 'Utilisateur déjà existant');
+      return handleError(res, 400, 'User already exists');
     }
 
     const user = new User({ username, email, password, newsletter });
@@ -79,15 +79,15 @@ export const register = async (req: Request, res: Response<ApiResponse<AuthRespo
 
     return res.status(201).json({
       success: true,
-      message: 'Inscription réussie',
+      message: 'Registration successful',
       data: {
         token,
         user: formatUserResponse(user)
       }
     });
   } catch (error) {
-    console.error('Erreur lors de l\'inscription:', error);
-    return handleError(res, 500, 'Erreur lors de l\'inscription');
+    console.error('Error during registration:', error);
+    return handleError(res, 500, 'Error during registration');
   }
 };
 
@@ -96,26 +96,26 @@ export const login = async (req: Request, res: Response<ApiResponse<AuthResponse
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return handleError(res, 400, 'Email et mot de passe requis');
+      return handleError(res, 400, 'Email and password are required');
     }
 
     const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
-      return handleError(res, 401, 'Email ou mot de passe incorrect');
+      return handleError(res, 401, 'Invalid email or password');
     }
 
     const token = jwt.sign({ userId: user.id } as JwtPayload, JWT_CONFIG.secret, { expiresIn: JWT_CONFIG.expiresIn });
 
     return res.json({
       success: true,
-      message: 'Connexion réussie',
+      message: 'Login successful',
       data: {
         token,
         user: formatUserResponse(user)
       }
     });
   } catch (error) {
-    return handleError(res, 500, 'Erreur lors de la connexion');
+    return handleError(res, 500, 'Error during login');
   }
 };
 
@@ -124,7 +124,7 @@ export const forgotPassword = async (req: Request, res: Response<ApiResponse>): 
     const { email } = req.body;
 
     if (!email || !AUTH_CONSTANTS.EMAIL_REGEX.test(email)) {
-      return handleError(res, 400, 'Email invalide');
+      return handleError(res, 400, 'Invalid email');
     }
 
     const resetToken = crypto.randomBytes(20).toString('hex');
@@ -132,7 +132,7 @@ export const forgotPassword = async (req: Request, res: Response<ApiResponse>): 
 
     const user = await User.findOne({ email });
     if (!user) {
-      return handleError(res, 404, 'Aucun compte associé à cet email');
+      return handleError(res, 404, 'No account associated with this email');
     }
 
     user.resetPasswordToken = resetPasswordToken;
@@ -142,16 +142,16 @@ export const forgotPassword = async (req: Request, res: Response<ApiResponse>): 
     const resetURL = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
     await transporter.sendMail({
       to: user.email,
-      subject: 'Réinitialisation de mot de passe',
-      text: `Pour réinitialiser votre mot de passe, cliquez sur ce lien : ${resetURL}`
+      subject: 'Password Reset',
+      text: `To reset your password, click on this link: ${resetURL}`
     });
 
     return res.json({
       success: true,
-      message: 'Email de réinitialisation envoyé'
+      message: 'Password reset email sent'
     });
   } catch (error) {
-    return handleError(res, 500, 'Erreur lors de l\'envoi de l\'email');
+    return handleError(res, 500, 'Error sending email');
   }
 };
 
@@ -161,11 +161,11 @@ export const resetPassword = async (req: Request, res: Response<ApiResponse>): P
     const { password } = req.body;
 
     if (!password) {
-      return handleError(res, 400, 'Mot de passe requis');
+      return handleError(res, 400, 'Password is required');
     }
 
     if (!isPasswordValid(password)) {
-      return handleError(res, 400, 'Le mot de passe doit contenir au moins 8 caractères, une majuscule et un caractère spécial');
+      return handleError(res, 400, 'Password must contain at least 8 characters, one uppercase letter and one special character');
     }
 
     const resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
@@ -176,7 +176,7 @@ export const resetPassword = async (req: Request, res: Response<ApiResponse>): P
     });
 
     if (!user) {
-      return handleError(res, 400, 'Token invalide ou expiré');
+      return handleError(res, 400, 'Invalid or expired token');
     }
 
     user.password = password;
@@ -186,9 +186,9 @@ export const resetPassword = async (req: Request, res: Response<ApiResponse>): P
 
     return res.json({
       success: true,
-      message: 'Mot de passe réinitialisé avec succès'
+      message: 'Password reset successful'
     });
   } catch (error) {
-    return handleError(res, 500, 'Erreur lors de la réinitialisation');
+    return handleError(res, 500, 'Error during password reset');
   }
 }; 

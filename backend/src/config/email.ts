@@ -16,6 +16,6 @@ export const EMAIL_CONFIG: EmailConfig = {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
   },
-  from: process.env.EMAIL_FROM || 'noreply@ateleslie.com',
-  commercialEmail: process.env.COMMERCIAL_EMAIL || 'commercial@ateleslie.com'
+  from: process.env.EMAIL_FROM || 'noreply@creativevisionintl.com',
+  commercialEmail: process.env.COMMERCIAL_EMAIL || 'commercial@creativevisionintl.com'
 }; 

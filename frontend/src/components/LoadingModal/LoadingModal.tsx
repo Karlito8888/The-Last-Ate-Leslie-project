@@ -24,7 +24,7 @@ const LoadingModal: React.FC = () => {
       <div className={styles.modalContent}>
         <div className={styles.loadingContent}>
           <h2 className={styles.title}>
-            Welcome<br />to<br />Ate Leslie's Project
+            Welcome<br />to<br />Creative Vision's Project
           </h2>
           <div className={styles.spinnerContainer}>
             <MutatingDots

@@ -1,282 +1,240 @@
 @use "../../styles/globals/variables" as *;
+@use "../../styles/globals/mixins" as *;
 
 .aboutContent {
-  min-height: 100vh;
-  max-width: 1400px;
+  padding: clamp(1rem, 0.5rem + 2vw, 2rem) 0;
+  max-width: 1200px;
   margin: 0 auto;
-  position: relative;
+}
 
-  &::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 50%;
-    height: 100vh;
-    background: 
-      linear-gradient(
-        to right,
-        rgba($color-white, 1) 0%,
-        rgba($color-white, 0.95) 20%,
-        rgba($color-white, 0.5) 100%
-      ),
-      image-set(
-        url('../../assets/images/about/people-3912733_1920.webp') type('image/webp'),
-        url('../../assets/images/about/people-3912733_1920.jpg') type('image/jpeg')
-      ) right center/cover no-repeat;
-    z-index: -1;
-    transition: all 0.3s ease-in-out;
-    
-    @media (max-width: 1280px) {
-      width: 60%;
-      background: 
-        linear-gradient(
-          to right,
-          rgba($color-white, 1) 0%,
-          rgba($color-white, 0.9) 30%,
-          rgba($color-white, 0.6) 100%
-        ),
-        image-set(
-          url('../../assets/images/about/people-3912733_1280.webp') type('image/webp'),
-          url('../../assets/images/about/people-3912733_1280.jpg') type('image/jpeg')
-        ) right center/cover no-repeat;
-    }
-    
-    @media (max-width: 640px) {
-      width: 100%;
-      background: 
-        linear-gradient(
-          135deg,
-          rgba($color-white, 0.98) 0%,
-          rgba($color-white, 0.95) 25%,
-          rgba($color-white, 0.85) 50%,
-          rgba($color-white, 0.75) 75%,
-          rgba($color-white, 0.65) 100%
-        ),
-        image-set(
-          url('../../assets/images/about/people-3912733_640.webp') type('image/webp'),
-          url('../../assets/images/about/people-3912733_640.jpg') type('image/jpeg')
-        ) center/cover no-repeat;
-      opacity: 1;
-      
-      @media (prefers-reduced-motion: no-preference) {
-        transform: translateZ(0);
-        will-change: transform;
-        animation: subtleParallax 20s ease-in-out infinite alternate;
-      }
-    }
+.aboutHeader {
+  text-align: center;
+  margin-bottom: clamp(2rem, 1rem + 4vw, 4rem);
+  padding: 0 clamp(1rem, 0.5rem + 2vw, 2rem);
+
+  h3 {
+    color: $color-primary;
+    font-size: clamp(1.8rem, 1.5rem + 2vw, 2.5rem);
+    margin-bottom: clamp(0.5rem, 0.3rem + 1vw, 1rem);
   }
 
-  .aboutHeader {
+  .tagline {
+    font-size: clamp(1.2rem, 1rem + 1vw, 1.5rem);
+    color: $color-text-dark;
+    margin-bottom: clamp(0.5rem, 0.3rem + 1vw, 1rem);
+    font-weight: 600;
+  }
+
+  .subtitle {
+    font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.1rem);
+    color: $color-text-light;
+    max-width: min(800px, 90%);
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+}
+
+.vision, .scope, .values, .mission {
+  margin-bottom: clamp(2rem, 1.5rem + 2vw, 4rem);
+  padding: 0 clamp(1rem, 0.5rem + 2vw, 2rem);
+}
+
+.visionContent, .scopeContent, .missionContent {
+  max-width: min(800px, 95%);
+  margin: 0 auto;
+
+  h4 {
+    color: $color-primary;
+    font-size: clamp(1.4rem, 1.2rem + 1.5vw, 1.8rem);
+    margin-bottom: clamp(1rem, 0.8rem + 1vw, 1.5rem);
     text-align: center;
-    margin-bottom: clamp(3rem, 2rem + 3vw, 5rem);
-    animation: fadeInUp 0.8s ease-out forwards;
-
-    h3 {
-      font-size: clamp(2rem, 1.5rem + 3vw, 4rem);
-      color: $color-primary;
-      margin-bottom: 1.5rem;
-      font-weight: 300;
-      letter-spacing: 2px;
-    }
-
-    .subtitle {
-      font-size: clamp(1.1rem, 1rem + 0.5vw, 1.3rem);
-      color: rgba($color-black, 0.8);
-      max-width: 800px;
-      margin: 0 auto;
-      line-height: 1.8;
-    }
   }
 
-  .vision {
-    margin-bottom: clamp(4rem, 3rem + 3vw, 6rem);
-    animation: fadeInUp 0.8s ease-out 0.2s forwards;
-    opacity: 0;
-
-    .visionContent {
-      max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
-      padding: clamp(2rem, 1.5rem + 2vw, 4rem);
-      background: rgba($color-primary, 0.05);
-      border-radius: $border-radius-lg;
-
-      h4 {
-        font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-        color: $color-primary;
-        margin-bottom: 2rem;
-        font-weight: 300;
-        letter-spacing: 2px;
-      }
-
-      p {
-        font-size: clamp(1rem, 0.9rem + 0.5vw, 1.2rem);
-        color: rgba($color-black, 0.8);
-        line-height: 1.8;
-        margin-bottom: 1.5rem;
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-    }
+  p {
+    color: $color-text-dark;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
   }
+}
 
-  .values {
-    margin-bottom: clamp(4rem, 3rem + 3vw, 6rem);
-    text-align: center;
-    animation: fadeInUp 0.8s ease-out 0.4s forwards;
-    opacity: 0;
-
-    h4 {
-      font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-      color: $color-primary;
-      margin-bottom: clamp(2rem, 1.5rem + 2vw, 3rem);
-      font-weight: 300;
-      letter-spacing: 2px;
-    }
-
-    .valuesGrid {
+.scope {
+  background-color: rgba($color-primary, 0.05);
+  padding: clamp(2rem, 1.5rem + 2vw, 3rem) clamp(1rem, 0.5rem + 2vw, 2rem);
+  margin: -2rem 0 clamp(2rem, 1.5rem + 2vw, 4rem) 0;
+  
+  .scopeContent {
+    ul {
+      list-style: none;
+      padding: 0;
       display: grid;
-      gap: clamp(1.5rem, 1rem + 2vw, 3rem);
-      
-      @media (min-width: 640px) {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      @media (min-width: 1024px) {
-        grid-template-columns: repeat(4, 1fr);
-      }
+      grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+      gap: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+      margin-top: clamp(1.5rem, 1rem + 1vw, 2rem);
 
-      .valueCard {
-        background: rgba($color-white, 0.02);
-        border: 1px solid rgba($color-primary, 0.1);
-        border-radius: $border-radius-lg;
-        padding: 2rem;
-        transition: all 0.3s ease;
+      li {
+        position: relative;
+        padding-left: 1.5rem;
+        color: $color-text-dark;
+        line-height: 1.4;
+        font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
 
-        &:hover {
-          transform: translateY(-5px);
-          background: rgba($color-white, 0.05);
-          border-color: rgba($color-primary, 0.3);
-        }
-
-        .icon {
-          font-size: 2.5rem;
-          margin-bottom: 1rem;
-          display: inline-block;
-        }
-
-        h5 {
+        &::before {
+          content: "•";
           color: $color-primary;
+          position: absolute;
+          left: 0;
           font-size: 1.2rem;
-          margin-bottom: 1rem;
-          font-weight: 500;
-        }
-
-        p {
-          color: rgba($color-black, 0.7);
-          font-size: 0.9rem;
-          line-height: 1.6;
         }
       }
     }
   }
+}
 
-  .mission {
-    margin-bottom: clamp(4rem, 3rem + 3vw, 6rem);
-    animation: fadeInUp 0.8s ease-out 0.6s forwards;
-    opacity: 0;
+.valuesGrid {
+  display: grid;
+  gap: 2rem;
+  margin: 3rem auto;
+  max-width: 1200px;
+  padding: 0 1rem;
+  
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+  }
+}
 
-    .missionContent {
-      max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
-      padding: clamp(2rem, 1.5rem + 2vw, 4rem);
-      background: rgba($color-primary, 0.05);
-      border-radius: $border-radius-lg;
+.valueCard {
+  text-align: center;
+  padding: clamp(1.5rem, 1rem + 2vw, 2rem);
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
 
-      h4 {
-        font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-        color: $color-primary;
-        margin-bottom: 1.5rem;
-        font-weight: 300;
-        letter-spacing: 2px;
-      }
+  &:hover {
+    transform: translateY(-5px);
+  }
 
-      .highlight {
-        font-size: clamp(1.2rem, 1rem + 1vw, 1.6rem);
-        color: $color-primary;
-        margin-bottom: 1.5rem;
-        font-weight: 500;
-        letter-spacing: 1px;
-      }
+  .icon {
+    font-size: clamp(2rem, 1.5rem + 2vw, 2.5rem);
+    margin-bottom: clamp(0.8rem, 0.6rem + 1vw, 1rem);
+    display: block;
+  }
 
-      p {
-        font-size: clamp(1rem, 0.9rem + 0.5vw, 1.2rem);
-        color: rgba($color-black, 0.8);
-        line-height: 1.8;
-      }
+  h5 {
+    color: $color-primary;
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.2rem);
+    margin-bottom: clamp(0.8rem, 0.6rem + 1vw, 1rem);
+  }
+
+  p {
+    color: $color-text-light;
+    line-height: 1.5;
+    font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.95rem);
+  }
+}
+
+.mission {
+  text-align: center;
+  background-color: rgba($color-primary, 0.05);
+  padding: clamp(2rem, 1.5rem + 2vw, 4rem) clamp(1rem, 0.5rem + 2vw, 2rem);
+  margin: -2rem 0 clamp(2rem, 1.5rem + 2vw, 4rem) 0;
+
+  .highlight {
+    font-size: clamp(1.2rem, 1rem + 1vw, 1.4rem);
+    color: $color-primary;
+    font-weight: 600;
+    margin-bottom: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+  }
+}
+
+.contactCTA {
+  text-align: center;
+  padding: clamp(2rem, 1.5rem + 2vw, 4rem) clamp(1rem, 0.5rem + 2vw, 2rem);
+  background: linear-gradient(135deg, $color-primary 0%, darken($color-primary, 10%) 100%);
+  color: white;
+  margin: 0 -1rem -2rem -1rem;
+
+  h4 {
+    font-size: clamp(1.5rem, 1.3rem + 1.5vw, 2rem);
+    margin-bottom: clamp(0.8rem, 0.6rem + 1vw, 1rem);
+  }
+
+  p {
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.1rem);
+    margin-bottom: clamp(1.5rem, 1rem + 2vw, 2rem);
+    opacity: 0.9;
+  }
+
+  .ctaButton {
+    display: inline-block;
+    padding: clamp(0.8rem, 0.6rem + 1vw, 1rem) clamp(1.5rem, 1rem + 2vw, 2rem);
+    background-color: white;
+    color: $color-primary;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
+  }
+}
+
+@media (max-width: 900px) {
+  .valuesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .scope .scopeContent ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .valuesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .scope .scopeContent ul {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .aboutContent {
+    overflow-x: hidden;
+    padding: clamp(1rem, 0.5rem + 2vw, 2rem) 0 0 0;
+  }
+
+  .visionContent, .scopeContent, .missionContent {
+    max-width: 100%;
+  }
+
+  .scope, .mission {
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0;
+    width: 100%;
   }
 
   .contactCTA {
-    text-align: center;
-    padding: clamp(3rem, 2rem + 3vw, 5rem);
-    background: rgba($color-primary, 0.1);
-    border-radius: $border-radius-lg;
-    animation: fadeInUp 0.8s ease-out 0.8s forwards;
-    opacity: 0;
-
-    h4 {
-      font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-      color: $color-primary;
-      margin-bottom: 1rem;
-      font-weight: 300;
-    }
-
-    p {
-      color: rgba($color-black, 0.8);
-      font-size: clamp(1rem, 0.9rem + 0.5vw, 1.2rem);
-      margin-bottom: 2rem;
-    }
-
-    .ctaButton {
-      display: inline-block;
-      padding: 1rem 2.5rem;
-      background: $color-primary;
-      color: $color-white;
-      text-decoration: none;
-      border-radius: $border-radius-sm;
-      font-size: 1.1rem;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: $color-primary-dark;
-        transform: translateY(-2px);
-      }
-    }
+    margin: 0;
+    padding: clamp(2rem, 1.5rem + 2vw, 4rem) clamp(1rem, 0.5rem + 2vw, 2rem);
+    border-radius: 0;
   }
-}
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+  .valuesGrid {
+    margin: 0;
+    width: 100%;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-@keyframes subtleParallax {
-  from {
-    background-position: center;
-  }
-  to {
-    background-position: center 10%;
+  .valueCard {
+    margin: 0;
+    border-radius: 4px;
   }
 } 

@@ -44,9 +44,9 @@ export const getNewsletterTemplate = (subject: string, content: string): string 
         ${content}
       </div>
       <div class="footer">
-        <p>© ${new Date().getFullYear()} ATE Leslie Project</p>
+        <p>© ${new Date().getFullYear()} Creative Vision Project</p>
         <p class="unsubscribe">
-          Pour vous désabonner, connectez-vous à votre compte et modifiez vos préférences de newsletter.
+          To unsubscribe, please log in to your account and update your newsletter preferences.
         </p>
       </div>
     </body>

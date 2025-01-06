@@ -5,7 +5,7 @@ import { isUsernameValid, isPasswordValid } from '../utils/validation';
 import { AUTH_CONSTANTS, UAE_NAME_CONSTANTS } from '../config/constants';
 import { UserResponse } from '../types/api';
 
-const sendSuccess = <T>(res: Response, data?: T, message = 'Succès'): Response => {
+const sendSuccess = <T>(res: Response, data?: T, message = 'Success'): Response => {
   return res.json({ success: true, message, data });
 };
 
@@ -34,11 +34,11 @@ const isValidNamePart = (name: string): boolean => {
 export const getProfile = async (req: Request, res: Response): Promise<Response> => {
   try {
     const user = await User.findById(req.user.id).select('-password');
-    if (!user) return sendError(res, 404, 'Utilisateur non trouvé');
+    if (!user) return sendError(res, 404, 'User not found');
     
     return sendSuccess(res, formatUserResponse(user));
   } catch {
-    return sendError(res, 500, 'Erreur serveur');
+    return sendError(res, 500, 'Server error');
   }
 };
 
@@ -46,38 +46,38 @@ export const updateProfile = async (req: Request, res: Response): Promise<Respon
   try {
     const { fullName, birthDate, address, mobilePhone, landline, newsletter } = req.body;
     const user = await User.findById(req.user.id);
-    if (!user) return sendError(res, 404, 'Utilisateur non trouvé');
+    if (!user) return sendError(res, 404, 'User not found');
 
     // Validations
     if (fullName) {
       if (fullName.firstName && !isValidNamePart(fullName.firstName)) {
-        return sendError(res, 400, 'Format de prénom invalide');
+        return sendError(res, 400, 'Invalid first name format');
       }
       if (fullName.familyName && !isValidNamePart(fullName.familyName)) {
-        return sendError(res, 400, 'Format de nom de famille invalide');
+        return sendError(res, 400, 'Invalid family name format');
       }
       if (fullName.gender && !['male', 'female'].includes(fullName.gender)) {
-        return sendError(res, 400, 'Format de genre invalide');
+        return sendError(res, 400, 'Invalid gender format');
       }
     }
 
     if (birthDate && !isValidDate(birthDate)) {
-      return sendError(res, 400, 'Format de date de naissance invalide');
+      return sendError(res, 400, 'Invalid birth date format');
     }
 
     if (address && !isValidAddress(address)) {
-      return sendError(res, 400, 'Format d\'adresse invalide');
+      return sendError(res, 400, 'Invalid address format');
     }
 
     if (mobilePhone && !isValidMobilePhone(mobilePhone)) {
-      return sendError(res, 400, 'Format de numéro de mobile invalide');
+      return sendError(res, 400, 'Invalid mobile phone format');
     }
 
     if (landline && !isValidLandline(landline)) {
-      return sendError(res, 400, 'Format de numéro fixe invalide');
+      return sendError(res, 400, 'Invalid landline format');
     }
 
-    // Mise à jour
+    // Update
     if (fullName) {
       user.fullName = user.fullName || {};
       Object.assign(user.fullName, fullName);
@@ -92,21 +92,21 @@ export const updateProfile = async (req: Request, res: Response): Promise<Respon
     if (typeof newsletter === 'boolean') user.newsletter = newsletter;
 
     await user.save();
-    return sendSuccess(res, formatUserResponse(user), 'Profil mis à jour avec succès');
+    return sendSuccess(res, formatUserResponse(user), 'Profile updated successfully');
   } catch {
-    return sendError(res, 500, 'Erreur lors de la mise à jour du profil');
+    return sendError(res, 500, 'Error updating profile');
   }
 };
 
 export const updateUsername = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { username } = req.body;
-    if (!username) return sendError(res, 400, 'Nom d\'utilisateur requis');
-    if (!isUsernameValid(username)) return sendError(res, 400, 'Format de nom d\'utilisateur invalide');
+    if (!username) return sendError(res, 400, 'Username is required');
+    if (!isUsernameValid(username)) return sendError(res, 400, 'Invalid username format');
 
     const existingUser = await User.findOne({ username });
     if (existingUser && existingUser.id !== req.user.id) {
-      return sendError(res, 400, 'Ce nom d\'utilisateur est déjà pris');
+      return sendError(res, 400, 'This username is already taken');
     }
 
     const user = await User.findByIdAndUpdate(
@@ -115,21 +115,21 @@ export const updateUsername = async (req: Request, res: Response): Promise<Respo
       { new: true }
     ).select('-password');
 
-    return sendSuccess(res, formatUserResponse(user), 'Nom d\'utilisateur mis à jour avec succès');
+    return sendSuccess(res, formatUserResponse(user), 'Username updated successfully');
   } catch {
-    return sendError(res, 500, 'Erreur lors de la mise à jour du nom d\'utilisateur');
+    return sendError(res, 500, 'Error updating username');
   }
 };
 
 export const updateEmail = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { email } = req.body;
-    if (!email) return sendError(res, 400, 'Email requis');
-    if (!AUTH_CONSTANTS.EMAIL_REGEX.test(email)) return sendError(res, 400, 'Format d\'email invalide');
+    if (!email) return sendError(res, 400, 'Email is required');
+    if (!AUTH_CONSTANTS.EMAIL_REGEX.test(email)) return sendError(res, 400, 'Invalid email format');
 
     const existingUser = await User.findOne({ email });
     if (existingUser && existingUser.id !== req.user.id) {
-      return sendError(res, 400, 'Cet email est déjà utilisé');
+      return sendError(res, 400, 'This email is already in use');
     }
 
     const user = await User.findByIdAndUpdate(
@@ -138,9 +138,9 @@ export const updateEmail = async (req: Request, res: Response): Promise<Response
       { new: true }
     ).select('-password');
 
-    return sendSuccess(res, formatUserResponse(user), 'Email mis à jour avec succès');
+    return sendSuccess(res, formatUserResponse(user), 'Email updated successfully');
   } catch {
-    return sendError(res, 500, 'Erreur lors de la mise à jour de l\'email');
+    return sendError(res, 500, 'Error updating email');
   }
 };
 
@@ -148,43 +148,43 @@ export const updatePassword = async (req: Request, res: Response): Promise<Respo
   try {
     const { currentPassword, newPassword } = req.body;
     if (!currentPassword || !newPassword) {
-      return sendError(res, 400, 'Les mots de passe actuel et nouveau sont requis');
+      return sendError(res, 400, 'Current and new passwords are required');
     }
 
     if (!isPasswordValid(newPassword)) {
-      return sendError(res, 400, 'Le nouveau mot de passe doit contenir au moins 8 caractères, une majuscule et un caractère spécial');
+      return sendError(res, 400, 'New password must contain at least 8 characters, one uppercase letter and one special character');
     }
 
     const user = await User.findById(req.user.id);
-    if (!user) return sendError(res, 404, 'Utilisateur non trouvé');
+    if (!user) return sendError(res, 404, 'User not found');
 
     const isMatch = await user.comparePassword(currentPassword);
-    if (!isMatch) return sendError(res, 401, 'Mot de passe actuel incorrect');
+    if (!isMatch) return sendError(res, 401, 'Current password is incorrect');
 
     user.password = newPassword;
     await user.save();
 
-    return sendSuccess(res, undefined, 'Mot de passe mis à jour avec succès');
+    return sendSuccess(res, undefined, 'Password updated successfully');
   } catch {
-    return sendError(res, 500, 'Erreur lors de la mise à jour du mot de passe');
+    return sendError(res, 500, 'Error updating password');
   }
 };
 
 export const deleteProfile = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { password } = req.body;
-    if (!password) return sendError(res, 400, 'Le mot de passe est requis pour supprimer le compte');
+    if (!password) return sendError(res, 400, 'Password is required to delete account');
 
     const user = await User.findById(req.user.id);
-    if (!user) return sendError(res, 404, 'Utilisateur non trouvé');
+    if (!user) return sendError(res, 404, 'User not found');
 
     const isMatch = await user.comparePassword(password);
-    if (!isMatch) return sendError(res, 401, 'Mot de passe incorrect');
+    if (!isMatch) return sendError(res, 401, 'Incorrect password');
 
     await User.findByIdAndDelete(req.user.id);
-    return sendSuccess(res, undefined, 'Compte supprimé avec succès');
+    return sendSuccess(res, undefined, 'Account deleted successfully');
   } catch {
-    return sendError(res, 500, 'Erreur lors de la suppression du compte');
+    return sendError(res, 500, 'Error deleting account');
   }
 };
 
@@ -193,7 +193,7 @@ export const updateNewsletter = async (req: Request, res: Response): Promise<Res
     const { newsletter } = req.body;
     
     if (typeof newsletter !== 'boolean') {
-      return sendError(res, 400, 'La valeur newsletter doit être un booléen');
+      return sendError(res, 400, 'Newsletter value must be a boolean');
     }
 
     const user = await User.findByIdAndUpdate(
@@ -203,11 +203,11 @@ export const updateNewsletter = async (req: Request, res: Response): Promise<Res
     ).select('-password');
 
     if (!user) {
-      return sendError(res, 404, 'Utilisateur non trouvé');
+      return sendError(res, 404, 'User not found');
     }
 
-    return sendSuccess(res, formatUserResponse(user), 'Préférence newsletter mise à jour avec succès');
+    return sendSuccess(res, formatUserResponse(user), 'Newsletter preference updated successfully');
   } catch {
-    return sendError(res, 500, 'Erreur lors de la mise à jour de la préférence newsletter');
+    return sendError(res, 500, 'Error updating newsletter preference');
   }
 }; 

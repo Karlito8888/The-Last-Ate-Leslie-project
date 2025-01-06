@@ -1,4 +1,4 @@
-# ATE Leslie Project
+# Creative Vision Project
 
 Projet événementiel minimaliste suivant la philosophie KISS.
 
