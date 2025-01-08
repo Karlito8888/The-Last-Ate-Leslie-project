@@ -1,38 +1,38 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
-import { JWT_CONFIG } from '../config/jwt';
 
-// Declaration to extend Request
-declare global {
-  namespace Express {
-    interface Request {
-      user: {
-        id: string;
-      };
-    }
-  }
-}
-
-// Authentication middleware
-export const protect = (req: Request, res: Response, next: NextFunction): Response | void => {
+export const authenticate = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
-    
-    if (!token) {
-      return res.status(401).json({ 
+    // Vérifier le header Authorization
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
         success: false,
-        message: 'Unauthorized'
+        message: 'No token provided'
       });
     }
 
-    const decoded = jwt.verify(token, JWT_CONFIG.secret) as { userId: string };
-    req.user = { id: decoded.userId };
-    return next();
+    // Extraire et vérifier le token
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as { id: string };
+
+    // Vérifier l'utilisateur
+    const user = await User.findById(decoded.id).select('-password');
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Ajouter l'utilisateur à la requête
+    req.user = user;
+    next();
   } catch (error) {
-    return res.status(401).json({ 
+    return res.status(401).json({
       success: false,
-      message: 'Unauthorized'
+      message: 'Invalid token'
     });
   }
 };
@@ -40,7 +40,7 @@ export const protect = (req: Request, res: Response, next: NextFunction): Respon
 // Admin verification middleware
 export const isAdmin = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user?.id);
     
     if (!user?.role || user.role !== 'admin') {
       return res.status(403).json({ 

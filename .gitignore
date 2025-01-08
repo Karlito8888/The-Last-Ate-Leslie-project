@@ -44,7 +44,6 @@ mongodb.log
 
 # TypeScript
 *.js.map
-*.d.ts
 
 # Temporary files
 *.tmp

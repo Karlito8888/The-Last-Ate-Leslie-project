@@ -1,19 +1,31 @@
 import express from 'express';
-import { getProfile, updateProfile, updateUsername, updateEmail, updatePassword, deleteProfile, updateNewsletter } from '../controllers/userController';
-import { protect } from '../middleware/auth';
+import { authenticate } from '../middleware/auth';
+import {
+  getProfile,
+  updateProfile,
+  updateUsername,
+  updateEmail,
+  updatePassword,
+  deleteProfile,
+  updateNewsletter
+} from '../controllers/userController';
 
 const router = express.Router();
 
-// Routes protégées par authentification
-router.use(protect);
+// Routes protégées (nécessitent une authentification)
+router.use(authenticate);
 
-// Routes du profil
+// Profile routes
 router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
-router.put('/profile/username', updateUsername);
-router.put('/profile/email', updateEmail);
-router.put('/profile/password', updatePassword);
-router.put('/profile/newsletter', updateNewsletter);
-router.delete('/profile', deleteProfile);
+
+// Specific update routes
+router.put('/username', updateUsername);
+router.put('/email', updateEmail);
+router.put('/password', updatePassword);
+router.put('/newsletter', updateNewsletter);
+
+// Delete account
+router.delete('/', deleteProfile);
 
 export default router; 
