@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"sentAt":{"$numberInt":"-1"}},"name":"sentAt_-1","background":true},{"v":{"$numberInt":"2"},"key":{"sentBy":{"$numberInt":"1"}},"name":"sentBy_1","background":true}],"uuid":"52325cf56ec44113bd22b9606ebee71d","collectionName":"newsletters","type":"collection"}

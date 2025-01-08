@@ -1,5 +1,20 @@
 import { BaseEntity, createExtendedApi, ApiResponse } from './baseApi';
 
+export type MessageStatus = 'new' | 'assigned' | 'in_progress' | 'resolved';
+
+export interface Message extends BaseEntity {
+  name: string;
+  email: string;
+  subject: string;
+  content: string;
+  status: MessageStatus;
+  createdAt: string;
+}
+
+export interface Admin extends User {
+  role: 'admin';
+}
+
 export interface User extends BaseEntity {
   username: string;
   email: string;
