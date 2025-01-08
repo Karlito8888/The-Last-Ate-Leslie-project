@@ -3,14 +3,15 @@ export interface ValidationError {
   message: string;
 }
 
-export interface ApiResponse<T = undefined> {
+export interface ApiResponse<T = void> {
   success: boolean;
-  message: string;
+  message?: string;
   data?: T;
-  errors?: ValidationError[];
+  errors?: string[];
 }
 
 export interface UserResponse {
+  id: string;
   username: string;
   email: string;
   role?: string;
@@ -22,7 +23,7 @@ export interface UserResponse {
     familyName?: string;
     gender?: 'male' | 'female';
   };
-  birthDate?: Date;
+  birthDate?: string;
   mobilePhone?: string;
   landline?: string;
   address?: {

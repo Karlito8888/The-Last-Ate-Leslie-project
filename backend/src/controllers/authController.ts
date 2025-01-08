@@ -9,6 +9,7 @@ import { ApiResponse, AuthResponse, UserResponse } from '../types/api';
 import { JwtPayload } from '../types/jwt';
 import { isPasswordValid, isUsernameValid } from '../utils/validation';
 import { AUTH_CONSTANTS } from '../config/constants';
+import bcryptjs from 'bcryptjs';
 
 const transporter = nodemailer.createTransport(EMAIL_CONFIG);
 
@@ -22,6 +23,7 @@ const handleError = (res: Response, status: number, message: string, errors?: st
 
 const formatUserResponse = (user: any): UserResponse => {
   const response: UserResponse = {
+    id: user._id.toString(),
     username: user.username,
     email: user.email
   };
@@ -95,27 +97,53 @@ export const login = async (req: Request, res: Response<ApiResponse<AuthResponse
   try {
     const { email, password } = req.body;
 
+    // Validation des champs
     if (!email || !password) {
-      return handleError(res, 400, 'Email and password are required');
+      return res.status(400).json({
+        success: false,
+        message: 'Email and password are required'
+      });
     }
 
+    // Recherche de l'utilisateur
     const user = await User.findOne({ email });
-    if (!user || !(await user.comparePassword(password))) {
-      return handleError(res, 401, 'Invalid email or password');
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+      });
     }
 
-    const token = jwt.sign({ userId: user.id } as JwtPayload, JWT_CONFIG.secret, { expiresIn: JWT_CONFIG.expiresIn });
+    // Vérification du mot de passe
+    const isMatch = await bcryptjs.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+      });
+    }
 
+    // Génération du token
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '1d' }
+    );
+
+    // Envoi de la réponse
     return res.json({
       success: true,
-      message: 'Login successful',
       data: {
         token,
         user: formatUserResponse(user)
       }
     });
   } catch (error) {
-    return handleError(res, 500, 'Error during login');
+    console.error('Login error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred during login'
+    });
   }
 };
 

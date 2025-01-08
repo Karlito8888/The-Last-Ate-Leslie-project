@@ -31,11 +31,11 @@ interface User extends BaseEntity {
 }
 
 interface LoginResponse {
-  success: boolean;
-  message: string;
-  data: {
-    user: User;
-    token: string;
+  token: string;
+  user: {
+    id: string;
+    email: string;
+    role: string;
   };
 }
 
