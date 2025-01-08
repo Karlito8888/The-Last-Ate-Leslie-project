@@ -2,239 +2,346 @@
 @use "../../styles/globals/mixins" as *;
 
 .aboutContent {
-  padding: clamp(1rem, 0.5rem + 2vw, 2rem) 0;
-  max-width: 1200px;
+  min-height: 100vh;
+  width: min(100%, 90vw);
   margin: 0 auto;
-}
+  position: relative;
 
-.aboutHeader {
-  text-align: center;
-  margin-bottom: clamp(2rem, 1rem + 4vw, 4rem);
-  padding: 0 clamp(1rem, 0.5rem + 2vw, 2rem);
-
-  h3 {
-    color: $color-primary;
-    font-size: clamp(1.8rem, 1.5rem + 2vw, 2.5rem);
-    margin-bottom: clamp(0.5rem, 0.3rem + 1vw, 1rem);
+  // Background image and overlay
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100vh;
+    background: linear-gradient(
+      to right,
+      rgba($color-white, 1) 0%,
+      rgba($color-white, 0.95) 20%,
+      rgba($color-white, 0.5) 100%
+    ),
+    image-set(
+      url('../../assets/images/about/people-3912733_1920.webp') type('image/webp'),
+      url('../../assets/images/about/people-3912733_1920.jpg') type('image/jpeg')
+    ) right center/cover no-repeat;
+    z-index: -1;
+    transition: all 0.3s ease-in-out;
   }
 
-  .tagline {
-    font-size: clamp(1.2rem, 1rem + 1vw, 1.5rem);
-    color: $color-text-dark;
-    margin-bottom: clamp(0.5rem, 0.3rem + 1vw, 1rem);
-    font-weight: 600;
-  }
-
-  .subtitle {
-    font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.1rem);
-    color: $color-text-light;
-    max-width: min(800px, 90%);
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-}
-
-.vision, .scope, .values, .mission {
-  margin-bottom: clamp(2rem, 1.5rem + 2vw, 4rem);
-  padding: 0 clamp(1rem, 0.5rem + 2vw, 2rem);
-}
-
-.visionContent, .scopeContent, .missionContent {
-  max-width: min(800px, 95%);
-  margin: 0 auto;
-
-  h4 {
-    color: $color-primary;
-    font-size: clamp(1.4rem, 1.2rem + 1.5vw, 1.8rem);
-    margin-bottom: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+  // Header Section
+  .aboutHeader {
     text-align: center;
+    margin-bottom: clamp(2rem, 1rem + 4vw, 4rem);
+    padding: 0 clamp(1rem, 0.5rem + 2vw, 2rem);
+    width: min(100%, 90vw);
+    margin-inline: auto;
+
+    h3 {
+      color: $color-primary;
+      font-size: clamp(1.8rem, 1.5rem + 2vw, 2.5rem);
+      margin-bottom: clamp(0.5rem, 0.3rem + 1vw, 1rem);
+    }
+
+    .tagline {
+      font-size: clamp(1.2rem, 1rem + 1vw, 1.5rem);
+      color: $color-text-dark;
+      margin-bottom: clamp(0.5rem, 0.3rem + 1vw, 1rem);
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.1rem);
+      color: $color-text-light;
+      width: min(800px, 90%);
+      margin: 0 auto;
+      line-height: 1.6;
+    }
   }
 
-  p {
-    color: $color-text-dark;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-    font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
-  }
-}
+  // Vision Section
+  .vision {
+    width: min(100%, 90vw);
+    margin: 0 auto clamp(2rem, 1.5rem + 2vw, 4rem) auto;
+    padding: 0 clamp(1rem, 0.5rem + 2vw, 2rem);
 
-.scope {
-  background-color: rgba($color-primary, 0.05);
-  padding: clamp(2rem, 1.5rem + 2vw, 3rem) clamp(1rem, 0.5rem + 2vw, 2rem);
-  margin: -2rem 0 clamp(2rem, 1.5rem + 2vw, 4rem) 0;
-  
-  .scopeContent {
-    ul {
-      list-style: none;
-      padding: 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
-      gap: clamp(1rem, 0.8rem + 1vw, 1.5rem);
-      margin-top: clamp(1.5rem, 1rem + 1vw, 2rem);
+    .visionContent {
+      width: min(100%, 90vw);
+      margin: 0 auto;
 
-      li {
-        position: relative;
-        padding-left: 1.5rem;
+      h4 {
+        color: $color-primary;
+        font-size: clamp(1.4rem, 1.2rem + 1.5vw, 1.8rem);
+        margin-bottom: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+        text-align: center;
+      }
+
+      p {
         color: $color-text-dark;
-        line-height: 1.4;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
         font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
+      }
+    }
+  }
 
-        &::before {
-          content: "•";
-          color: $color-primary;
-          position: absolute;
-          left: 0;
-          font-size: 1.2rem;
+  // Scope Section
+  .scope {
+    width: 100%;
+    background-color: rgba($color-primary, 0.05);
+    padding: clamp(2rem, 1.5rem + 2vw, 3rem) clamp(1rem, 0.5rem + 2vw, 2rem);
+    margin: 0 auto clamp(2rem, 1.5rem + 2vw, 4rem) auto;
+
+    .scopeContent {
+      width: min(100%, 90vw);
+      margin: 0 auto;
+
+      h4 {
+        color: $color-primary;
+        font-size: clamp(1.4rem, 1.2rem + 1.5vw, 1.8rem);
+        margin-bottom: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+        text-align: center;
+      }
+
+      p {
+        color: $color-text-dark;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+        gap: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+        margin-top: clamp(1.5rem, 1rem + 1vw, 2rem);
+        width: min(100%, 90vw);
+        margin-inline: auto;
+
+        li {
+          position: relative;
+          padding-left: 1.5rem;
+          color: $color-text-dark;
+          line-height: 1.4;
+          font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
+
+          &::before {
+            content: "•";
+            color: $color-primary;
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+          }
         }
       }
     }
   }
-}
 
-.valuesGrid {
-  display: grid;
-  gap: 2rem;
-  margin: 3rem auto;
-  max-width: 1200px;
-  padding: 0 1rem;
-  
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 3rem;
-  }
-}
+  // Values Section
+  .values {
+    width: min(100%, 90vw);
+    margin: 0 auto clamp(2rem, 1.5rem + 2vw, 4rem) auto;
+    padding: 0 clamp(1rem, 0.5rem + 2vw, 2rem);
 
-.valueCard {
-  text-align: center;
-  padding: clamp(1.5rem, 1rem + 2vw, 2rem);
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+    h4 {
+      color: $color-primary;
+      font-size: clamp(1.4rem, 1.2rem + 1.5vw, 1.8rem);
+      margin-bottom: clamp(2rem, 1.5rem + 2vw, 3rem);
+      text-align: center;
+    }
 
-  &:hover {
-    transform: translateY(-5px);
-  }
+    .valuesGrid {
+      display: grid;
+      gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+      margin: 0 auto;
+      width: min(100%, 90vw);
+      grid-template-columns: 1fr;
+      
+      @media (min-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
 
-  .icon {
-    font-size: clamp(2rem, 1.5rem + 2vw, 2.5rem);
-    margin-bottom: clamp(0.8rem, 0.6rem + 1vw, 1rem);
-    display: block;
-  }
+    .valueCard {
+      text-align: center;
+      padding: clamp(1.5rem, 1rem + 2vw, 2rem);
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
 
-  h5 {
-    color: $color-primary;
-    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.2rem);
-    margin-bottom: clamp(0.8rem, 0.6rem + 1vw, 1rem);
-  }
+      &:hover {
+        transform: translateY(-5px);
+      }
 
-  p {
-    color: $color-text-light;
-    line-height: 1.5;
-    font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.95rem);
-  }
-}
+      .icon {
+        font-size: clamp(2rem, 1.5rem + 2vw, 2.5rem);
+        margin-bottom: clamp(0.8rem, 0.6rem + 1vw, 1rem);
+        display: block;
+      }
 
-.mission {
-  text-align: center;
-  background-color: rgba($color-primary, 0.05);
-  padding: clamp(2rem, 1.5rem + 2vw, 4rem) clamp(1rem, 0.5rem + 2vw, 2rem);
-  margin: -2rem 0 clamp(2rem, 1.5rem + 2vw, 4rem) 0;
+      h5 {
+        color: $color-primary;
+        font-size: clamp(1.1rem, 1rem + 0.5vw, 1.2rem);
+        margin-bottom: clamp(0.8rem, 0.6rem + 1vw, 1rem);
+      }
 
-  .highlight {
-    font-size: clamp(1.2rem, 1rem + 1vw, 1.4rem);
-    color: $color-primary;
-    font-weight: 600;
-    margin-bottom: clamp(1rem, 0.8rem + 1vw, 1.5rem);
-  }
-}
-
-.contactCTA {
-  text-align: center;
-  padding: clamp(2rem, 1.5rem + 2vw, 4rem) clamp(1rem, 0.5rem + 2vw, 2rem);
-  background: linear-gradient(135deg, $color-primary 0%, darken($color-primary, 10%) 100%);
-  color: white;
-  margin: 0 -1rem -2rem -1rem;
-
-  h4 {
-    font-size: clamp(1.5rem, 1.3rem + 1.5vw, 2rem);
-    margin-bottom: clamp(0.8rem, 0.6rem + 1vw, 1rem);
-  }
-
-  p {
-    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.1rem);
-    margin-bottom: clamp(1.5rem, 1rem + 2vw, 2rem);
-    opacity: 0.9;
-  }
-
-  .ctaButton {
-    display: inline-block;
-    padding: clamp(0.8rem, 0.6rem + 1vw, 1rem) clamp(1.5rem, 1rem + 2vw, 2rem);
-    background-color: white;
-    color: $color-primary;
-    text-decoration: none;
-    border-radius: 4px;
-    font-weight: 600;
-    font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      p {
+        color: $color-text-light;
+        line-height: 1.5;
+        font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.95rem);
+      }
     }
   }
-}
 
-@media (max-width: 900px) {
-  .valuesGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .scope .scopeContent ul {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .valuesGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .scope .scopeContent ul {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 650px) {
-  .aboutContent {
-    overflow-x: hidden;
-    padding: clamp(1rem, 0.5rem + 2vw, 2rem) 0 0 0;
-  }
-
-  .visionContent, .scopeContent, .missionContent {
-    max-width: 100%;
-  }
-
-  .scope, .mission {
-    margin-left: 0;
-    margin-right: 0;
-    border-radius: 0;
+  // Mission Section
+  .mission {
     width: 100%;
-  }
-
-  .contactCTA {
-    margin: 0;
+    text-align: center;
+    background-color: rgba($color-primary, 0.05);
     padding: clamp(2rem, 1.5rem + 2vw, 4rem) clamp(1rem, 0.5rem + 2vw, 2rem);
-    border-radius: 0;
+    margin: 0 auto clamp(2rem, 1.5rem + 2vw, 4rem) auto;
+
+    .missionContent {
+      width: min(100%, 90vw);
+      margin: 0 auto;
+
+      h4 {
+        color: $color-primary;
+        font-size: clamp(1.4rem, 1.2rem + 1.5vw, 1.8rem);
+        margin-bottom: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+        text-align: center;
+      }
+
+      p {
+        color: $color-text-dark;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
+      }
+    }
+
+    .highlight {
+      font-size: clamp(1.2rem, 1rem + 1vw, 1.4rem);
+      color: $color-primary;
+      font-weight: 600;
+      margin-bottom: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+    }
   }
 
-  .valuesGrid {
-    margin: 0;
+  // CTA Section
+  .contactCTA {
+    width: min(100%, 90vw);
+    margin: 0 auto;
+    text-align: center;
+    padding: clamp(2rem, 1.5rem + 2vw, 4rem) clamp(1rem, 0.5rem + 2vw, 2rem);
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
+    color: white;
+    position: relative;
+    z-index: 1;
+
+    h4 {
+      font-size: clamp(1.5rem, 1.3rem + 1.5vw, 2rem);
+      margin-bottom: clamp(0.8rem, 0.6rem + 1vw, 1rem);
+    }
+
+    p {
+      font-size: clamp(1rem, 0.9rem + 0.5vw, 1.1rem);
+      margin-bottom: clamp(1.5rem, 1rem + 2vw, 2rem);
+      opacity: 0.9;
+    }
+
+    .ctaButton {
+      display: inline-block;
+      padding: clamp(0.8rem, 0.6rem + 1vw, 1rem) clamp(1.5rem, 1rem + 2vw, 2rem);
+      background-color: white;
+      color: $color-primary;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+
+  // Partners Section
+  .partners {
+    width: min(100%, 90vw);
+    margin: 0 auto;
+    position: relative;
+    z-index: 0;
+    padding: clamp(4rem, 3rem + 2vw, 6rem) clamp(1rem, 0.5rem + 2vw, 2rem);
+    // background-color: $color-white;
+    text-align: center;
+
+    h4 {
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      color: $color-primary;
+    }
+  }
+
+  // Media Queries
+  @media (max-width: 1280px) {
+    &::before {
+      width: 60%;
+      background: linear-gradient(
+        to right,
+        rgba($color-white, 1) 0%,
+        rgba($color-white, 0.9) 30%,
+        rgba($color-white, 0.6) 100%
+      ),
+      image-set(
+        url('../../assets/images/about/people-3912733_1280.webp') type('image/webp'),
+        url('../../assets/images/about/people-3912733_1280.jpg') type('image/jpeg')
+      ) right center/cover no-repeat;
+    }
+  }
+
+  @media (max-width: 640px) {
     width: 100%;
-  }
+    padding: clamp(1rem, 0.5rem + 2vw, 2rem) 0 0 0;
 
-  .valueCard {
-    margin: 0;
-    border-radius: 4px;
+    &::before {
+      width: 100%;
+      background: linear-gradient(
+        135deg,
+        rgba($color-white, 0.98) 0%,
+        rgba($color-white, 0.95) 25%,
+        rgba($color-white, 0.85) 50%,
+        rgba($color-white, 0.75) 75%,
+        rgba($color-white, 0.65) 100%
+      ),
+      image-set(
+        url('../../assets/images/about/people-3912733_640.webp') type('image/webp'),
+        url('../../assets/images/about/people-3912733_640.jpg') type('image/jpeg')
+      ) center/cover no-repeat;
+      opacity: 1;
+      
+      @media (prefers-reduced-motion: no-preference) {
+        transform: translateZ(0);
+        will-change: transform;
+        animation: subtleParallax 20s ease-in-out infinite alternate;
+      }
+    }
+
+    .scope, .mission, .contactCTA, .partners {
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+      border-radius: 0;
+    }
+
+    .valuesGrid {
+      width: 100%;
+      padding: 0 1rem;
+    }
   }
 } 

@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './About.module.scss'
+import Carousel from '../../components/Carousel/Carousel'
 
 const About: React.FC = () => {
   const values = [
@@ -104,6 +105,11 @@ const About: React.FC = () => {
         <a href="/contact" className={styles.ctaButton}>
           Start a Project
         </a>
+      </section>
+
+      <section className={styles.partners}>
+        <h4>Our Trusted Partners</h4>
+        <Carousel />
       </section>
     </div>
   )

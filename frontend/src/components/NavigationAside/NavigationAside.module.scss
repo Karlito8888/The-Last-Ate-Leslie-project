@@ -13,10 +13,17 @@
     $color-black 100%
   );
   color: $color-white;
-  transition: width 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   z-index: 110;
   width: 50px;
   letter-spacing: 2px;
+
+  @media (max-width: 480px) {
+    z-index: 1000;
+    &:hover {
+      width: 200px;
+    }
+  }
 
   &.animate {
     animation: slideInFromLeft 5s ease-in-out 2s;
@@ -105,6 +112,10 @@
     font-size: 20px;
     font-weight: bold;
     z-index: 2;
+
+    @media (orientation: landscape) and (max-height: 480px) {
+      display: none;
+    }
   }
 
   @keyframes slideInFromLeft {

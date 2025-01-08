@@ -1,4 +1,7 @@
 .app {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
@@ -6,6 +9,9 @@
 
 .mainContent {
   // padding: 70px 20px 20px 70px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
   padding-top: clamp(3.75rem, 2.9688rem + 2.5vw, 4.375rem);
   padding-right: clamp(0.625rem, -0.1563rem + 2.5vw, 1.25rem);
   padding-bottom: 20px;

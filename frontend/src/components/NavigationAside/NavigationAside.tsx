@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { RiHome2Line, RiLogoutCircleLine } from "react-icons/ri"
 import { IoIosImages } from "react-icons/io"
@@ -22,29 +22,16 @@ const NavigationAside: React.FC<NavigationAsideProps> = ({ isFirstVisit }) => {
   const isAuthenticated = !!localStorage.getItem('token')
   const isAdmin = currentUser?.role === 'admin'
 
-  console.log('NavigationAside - currentUser:', currentUser)
-  console.log('NavigationAside - isAdmin:', isAdmin)
-  console.log('NavigationAside - role:', currentUser?.role)
-
   const handleLogout = () => {
     dispatch(logout())
     navigate('/auth/login')
   }
 
-  useEffect(() => {
-    if (isFirstVisit) {
-      const timer = setTimeout(() => {
-        // Pas besoin de setIsExpanded car nous utilisons le hover
-      }, 6000) // Synchronisé avec la modale de chargement
-      return () => clearTimeout(timer)
-    }
-  }, [isFirstVisit])
-
   return (
     <aside 
       className={`
         ${styles.navigationAside} 
-        ${isFirstVisit ? styles.animate : ''} 
+        ${isFirstVisit ? styles.animate : ''}
       `}
     >
       <div className={styles.toggleButton}>
