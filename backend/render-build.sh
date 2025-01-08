@@ -10,7 +10,7 @@ echo "Installation des dépendances..."
 npm install
 
 echo "Installation des types TypeScript..."
-npm install --save-dev @types/node @types/express @types/cors @types/bcryptjs @types/jsonwebtoken @types/nodemailer
+npm install --save @types/node @types/express @types/cors @types/bcryptjs @types/jsonwebtoken @types/nodemailer
 
 echo "Compilation TypeScript..."
 npm run build
