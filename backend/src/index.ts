@@ -15,11 +15,14 @@ export const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.CLIENT_URL 
-    : 'http://localhost:3000',
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://creative-vision-project.netlify.app'
+  ],
   credentials: true,
-  optionsSuccessStatus: 200
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 // Basic middleware
