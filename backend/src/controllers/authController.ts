@@ -123,12 +123,19 @@ export const login = async (req: Request, res: Response<ApiResponse<AuthResponse
       });
     }
 
-    // Génération du token
+    // Génération du token avec la même structure que dans le middleware
     const token = jwt.sign(
       { id: user._id },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '1d' }
     );
+
+    // Log pour le débogage
+    console.log('Login successful for:', {
+      id: user._id,
+      email: user.email,
+      role: user.role
+    });
 
     // Envoi de la réponse
     return res.json({
