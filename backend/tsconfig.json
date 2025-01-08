@@ -3,6 +3,7 @@
     "target": "es2018",
     "module": "commonjs",
     "lib": ["es2018", "esnext.asynciterable", "dom"],
+    "types": ["node"],
     "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./dist",
@@ -22,7 +23,13 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "typeRoots": ["./node_modules/@types"]
+    "paths": {
+      "*": ["node_modules/*", "src/types.d.ts"]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ]
   },
   "exclude": [
     "node_modules",
@@ -30,5 +37,8 @@
     "src/__tests__",
     "dist"
   ],
-  "include": ["./src/**/*.ts"]
+  "include": ["./src/**/*.ts", "./src/**/*.d.ts"],
+  "ts-node": {
+    "files": true
+  }
 } 

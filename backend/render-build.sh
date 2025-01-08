@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
-# exit on error
-set -o errexit
 
+# Afficher les commandes exécutées
+set -x
+
+# Sortir en cas d'erreur
+set -e
+
+echo "Installation des dépendances..."
 npm install
-npm install --save-dev @types/jest @types/node
-npm run build 
+
+echo "Installation des types TypeScript..."
+npm install --save-dev @types/node @types/express @types/cors @types/bcryptjs @types/jsonwebtoken @types/nodemailer
+
+echo "Compilation TypeScript..."
+npm run build
+
+echo "Build terminé avec succès!" 

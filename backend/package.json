@@ -7,6 +7,7 @@
     "start": "node dist/index.js",
     "dev": "nodemon",
     "build": "tsc",
+    "postbuild": "cp -r src/templates dist/ && cp .env dist/ || true",
     "watch-ts": "tsc -w",
     "test": "NODE_ENV=test jest --detectOpenHandles",
     "test:watch": "NODE_ENV=test jest --watch",
