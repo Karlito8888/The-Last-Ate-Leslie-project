@@ -12,8 +12,8 @@
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
@@ -22,7 +22,7 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "types": ["node", "jest"]
+    "typeRoots": ["./node_modules/@types"]
   },
   "exclude": ["node_modules"],
   "include": ["./src/**/*.ts"]
