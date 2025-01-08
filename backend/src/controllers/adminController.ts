@@ -1,122 +1,193 @@
 import { Request, Response } from 'express';
 import { User } from '../models/User';
-import { Newsletter } from '../models/Newsletter';
-import nodemailer from 'nodemailer';
-import { EMAIL_CONFIG } from '../config/email';
-import { getNewsletterTemplate } from '../templates/newsletter';
+import { Message } from '../models/Message';
+import { UserResponse } from '../types/api';
 
-const transporter = nodemailer.createTransport(EMAIL_CONFIG);
+const formatUserResponse = (user: any): UserResponse => {
+  return {
+    id: user._id.toString(),
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    newsletter: user.newsletter,
+    fullName: user.fullName,
+    birthDate: user.birthDate,
+    mobilePhone: user.mobilePhone,
+    landline: user.landline,
+    address: user.address
+  };
+};
 
-// Get users list
-export const getUsers = async (_req: Request, res: Response): Promise<Response> => {
+// Gestion des utilisateurs
+export const getAllUsers = async (req: Request, res: Response): Promise<Response> => {
   try {
     const users = await User.find().select('-password');
-    return res.status(200).json({
+    return res.json({
       success: true,
-      data: users
+      data: users.map(formatUserResponse)
     });
   } catch (error) {
-    console.error('Error while retrieving users:', error);
+    console.error('Error getting users:', error);
     return res.status(500).json({
       success: false,
-      message: 'Error while retrieving users'
+      message: 'Error getting users'
     });
   }
 };
 
-// Send newsletter
-export const sendNewsletter = async (req: Request, res: Response): Promise<Response> => {
+export const getUserById = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { subject, content } = req.body;
-
-    // Validation
-    if (!subject || !content) {
-      return res.status(400).json({
+    const user = await User.findById(req.params.id).select('-password');
+    if (!user) {
+      return res.status(404).json({
         success: false,
-        message: 'Subject and content are required'
+        message: 'User not found'
       });
     }
-
-    // Get newsletter subscribers
-    const subscribers = await User.find({ newsletter: true }).select('email');
-    const recipientEmails = subscribers.map(user => user.email);
-
-    if (recipientEmails.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'No users subscribed to the newsletter'
-      });
-    }
-
-    // Generate HTML with template
-    const htmlContent = getNewsletterTemplate(subject, content);
-
-    // Send newsletter
-    await transporter.sendMail({
-      from: EMAIL_CONFIG.from,
-      bcc: recipientEmails, // Using BCC for privacy
-      subject: subject,
-      html: htmlContent,
-      text: content // Text version for clients that don't support HTML
-    });
-
-    // Save newsletter in database
-    await Newsletter.create({
-      subject,
-      content: htmlContent, // Save complete HTML version
-      sentBy: req.user.id,
-      recipientCount: recipientEmails.length,
-      recipients: recipientEmails
-    });
-
-    return res.status(200).json({
+    return res.json({
       success: true,
-      message: 'Newsletter sent successfully',
-      data: {
-        recipientCount: recipientEmails.length
-      }
+      data: formatUserResponse(user)
     });
-
   } catch (error) {
-    console.error('Error while sending newsletter:', error);
+    console.error('Error getting user:', error);
     return res.status(500).json({
       success: false,
-      message: 'Error while sending newsletter'
+      message: 'Error getting user'
     });
   }
 };
 
-// Get newsletter history
-export const getNewsletterHistory = async (req: Request, res: Response): Promise<Response> => {
+export const updateUserRole = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const page = parseInt(req.query.page as string || '1');
-    const limit = parseInt(req.query.limit as string || '10');
-    const skip = (page - 1) * limit;
+    const { role } = req.body;
+    if (!role || !['user', 'admin'].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid role'
+      });
+    }
 
-    const newsletters = await Newsletter.find()
-      .sort({ sentAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate('sentBy', 'username email');
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { role },
+      { new: true }
+    ).select('-password');
 
-    const total = await Newsletter.countDocuments();
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
 
-    return res.status(200).json({
+    return res.json({
       success: true,
-      data: {
-        newsletters,
-        pagination: {
-          total,
-          page,
-          pages: Math.ceil(total / limit)
-        }
-      }
+      message: 'User role updated successfully',
+      data: formatUserResponse(user)
     });
   } catch (error) {
-    console.error('Error while retrieving newsletter history:', error);
+    console.error('Error updating user role:', error);
     return res.status(500).json({
       success: false,
-      message: 'Error while retrieving newsletter history'
+      message: 'Error updating user role'
+    });
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    return res.json({
+      success: true,
+      message: 'User deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error deleting user'
+    });
+  }
+};
+
+// Gestion des messages
+export const getMessages = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const messages = await Message.find().sort({ createdAt: -1 });
+    return res.json({
+      success: true,
+      data: messages
+    });
+  } catch (error) {
+    console.error('Error getting messages:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error getting messages'
+    });
+  }
+};
+
+export const updateMessageStatus = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { status } = req.body;
+    if (!status || !['new', 'in_progress', 'resolved'].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid status'
+      });
+    }
+
+    const message = await Message.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!message) {
+      return res.status(404).json({
+        success: false,
+        message: 'Message not found'
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Message status updated successfully',
+      data: message
+    });
+  } catch (error) {
+    console.error('Error updating message status:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error updating message status'
+    });
+  }
+};
+
+export const deleteMessage = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const message = await Message.findByIdAndDelete(req.params.id);
+    if (!message) {
+      return res.status(404).json({
+        success: false,
+        message: 'Message not found'
+      });
+    }
+    return res.json({
+      success: true,
+      message: 'Message deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting message:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error deleting message'
     });
   }
 }; 
