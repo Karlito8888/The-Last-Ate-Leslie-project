@@ -3,7 +3,7 @@ import { User } from '../models/User';
 import { isValidDate, isValidAddress, isValidMobilePhone, isValidLandline } from '../utils/profileValidation';
 import { isUsernameValid, isPasswordValid } from '../utils/validation';
 import { AUTH_CONSTANTS, UAE_NAME_CONSTANTS } from '../config/constants';
-import { UserResponse } from '../types/api';
+import { ApiResponse, UserResponse } from '../types/api';
 
 const sendSuccess = <T>(res: Response, data?: T, message = 'Success'): Response => {
   return res.json({ success: true, message, data });
@@ -13,17 +13,20 @@ const sendError = (res: Response, status: number, message: string): Response => 
   return res.status(status).json({ success: false, message });
 };
 
-const formatUserResponse = (user: any): UserResponse => ({
-  username: user.username,
-  email: user.email,
-  role: user.role,
-  newsletter: user.newsletter,
-  fullName: user.fullName,
-  birthDate: user.birthDate ? user.birthDate.toISOString().split('T')[0] : undefined,
-  mobilePhone: user.mobilePhone,
-  landline: user.landline,
-  address: user.address
-});
+const formatUserResponse = (user: any): UserResponse => {
+  return {
+    id: user._id.toString(),
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    newsletter: user.newsletter,
+    fullName: user.fullName,
+    birthDate: user.birthDate,
+    mobilePhone: user.mobilePhone,
+    landline: user.landline,
+    address: user.address
+  };
+};
 
 const isValidNamePart = (name: string): boolean => {
   return name.length >= UAE_NAME_CONSTANTS.MIN_LENGTH &&
@@ -31,70 +34,66 @@ const isValidNamePart = (name: string): boolean => {
          UAE_NAME_CONSTANTS.ALLOWED_CHARS.test(name);
 };
 
-export const getProfile = async (req: Request, res: Response): Promise<Response> => {
+export const getProfile = async (req: Request, res: Response<ApiResponse<UserResponse>>): Promise<Response> => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
-    if (!user) return sendError(res, 404, 'User not found');
-    
-    return sendSuccess(res, formatUserResponse(user));
-  } catch {
-    return sendError(res, 500, 'Server error');
+    const user = await User.findById(req.user?.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    return res.json({
+      success: true,
+      data: formatUserResponse(user)
+    });
+  } catch (error) {
+    console.error('Error fetching profile:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error fetching profile'
+    });
   }
 };
 
-export const updateProfile = async (req: Request, res: Response): Promise<Response> => {
+export const updateProfile = async (req: Request, res: Response<ApiResponse<UserResponse>>): Promise<Response> => {
   try {
-    const { fullName, birthDate, address, mobilePhone, landline, newsletter } = req.body;
-    const user = await User.findById(req.user.id);
-    if (!user) return sendError(res, 404, 'User not found');
+    const updates = req.body;
+    const allowedUpdates = ['username', 'fullName', 'birthDate', 'mobilePhone', 'landline', 'address', 'newsletter'];
+    
+    // Filtrer les champs non autorisés
+    const filteredUpdates = Object.keys(updates)
+      .filter(key => allowedUpdates.includes(key))
+      .reduce((obj: any, key) => {
+        obj[key] = updates[key];
+        return obj;
+      }, {});
 
-    // Validations
-    if (fullName) {
-      if (fullName.firstName && !isValidNamePart(fullName.firstName)) {
-        return sendError(res, 400, 'Invalid first name format');
-      }
-      if (fullName.familyName && !isValidNamePart(fullName.familyName)) {
-        return sendError(res, 400, 'Invalid family name format');
-      }
-      if (fullName.gender && !['male', 'female'].includes(fullName.gender)) {
-        return sendError(res, 400, 'Invalid gender format');
-      }
+    const user = await User.findByIdAndUpdate(
+      req.user?.id,
+      { $set: filteredUpdates },
+      { new: true, runValidators: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
     }
 
-    if (birthDate && !isValidDate(birthDate)) {
-      return sendError(res, 400, 'Invalid birth date format');
-    }
-
-    if (address && !isValidAddress(address)) {
-      return sendError(res, 400, 'Invalid address format');
-    }
-
-    if (mobilePhone && !isValidMobilePhone(mobilePhone)) {
-      return sendError(res, 400, 'Invalid mobile phone format');
-    }
-
-    if (landline && !isValidLandline(landline)) {
-      return sendError(res, 400, 'Invalid landline format');
-    }
-
-    // Update
-    if (fullName) {
-      user.fullName = user.fullName || {};
-      Object.assign(user.fullName, fullName);
-    }
-    if (birthDate) user.birthDate = new Date(birthDate);
-    if (address) {
-      user.address = user.address || {};
-      Object.assign(user.address, address);
-    }
-    if (mobilePhone) user.mobilePhone = mobilePhone;
-    if (landline) user.landline = landline;
-    if (typeof newsletter === 'boolean') user.newsletter = newsletter;
-
-    await user.save();
-    return sendSuccess(res, formatUserResponse(user), 'Profile updated successfully');
-  } catch {
-    return sendError(res, 500, 'Error updating profile');
+    return res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: formatUserResponse(user)
+    });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error updating profile'
+    });
   }
 };
 
