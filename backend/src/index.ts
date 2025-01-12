@@ -15,8 +15,6 @@ export const app = express();
 
 // Options de connexion MongoDB optimisées
 const mongooseOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   autoIndex: true, // Indexation automatique en production
   connectTimeoutMS: 10000, // Timeout de connexion à 10s
   socketTimeoutMS: 45000, // Timeout des opérations à 45s
