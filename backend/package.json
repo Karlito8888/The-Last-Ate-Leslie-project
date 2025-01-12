@@ -30,8 +30,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.1",
     "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.8",
-    "typescript": "^5.3.3"
+    "nodemailer": "^6.9.8"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
@@ -40,6 +39,7 @@
     "nodemon": "^3.0.3",
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
   }
 }

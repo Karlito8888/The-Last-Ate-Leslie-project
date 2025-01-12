@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { 
+import React, { useState } from "react";
+import {
   useGetUsersQuery,
   useGetNewsletterHistoryQuery,
   useSendNewsletterMutation,
@@ -8,17 +8,17 @@ import {
   useUpdateEmailMutation,
   useUpdatePasswordMutation,
   User,
-  Newsletter
-} from '../../store/api/adminApi';
-import { toast } from 'react-toastify';
-import styles from './AdminDashboard.module.scss';
+  Newsletter,
+} from "../../store/api/adminApi";
+import { toast } from "react-toastify";
+import styles from "./AdminDashboard.module.scss";
 
 // Types pour les onglets
-type TabType = 'overview' | 'users' | 'newsletter' | 'profile';
+type TabType = "overview" | "users" | "newsletter" | "profile";
 
 // Ajout des types et états pour le tri
-type SortField = 'username' | 'email' | 'newsletter';
-type SortOrder = 'asc' | 'desc';
+type SortField = "username" | "email" | "newsletter";
+type SortOrder = "asc" | "desc";
 
 // Type pour la réponse de l'API du profil
 interface ProfileResponse {
@@ -32,47 +32,47 @@ interface ProfileResponse {
 }
 
 const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('overview');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState<TabType>("overview");
+  const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  
+
   // Ajout des types et états pour le tri
-  const [sortField, setSortField] = useState<SortField>('username');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [sortField, setSortField] = useState<SortField>("username");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
 
   // Ajout des states pour les modals d'édition
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
-  const [newUsername, setNewUsername] = useState('');
-  const [newEmail, setNewEmail] = useState('');
+  const [newUsername, setNewUsername] = useState("");
+  const [newEmail, setNewEmail] = useState("");
 
   // Récupération des données
-  const { 
-    data: users = [], 
-    isLoading: isLoadingUsers, 
-    error: usersError 
+  const {
+    data: users = [],
+    isLoading: isLoadingUsers,
+    error: usersError,
   } = useGetUsersQuery();
 
   const {
     data: newsletterHistory,
     isLoading: isLoadingNewsletter,
-    error: newsletterError
+    error: newsletterError,
   } = useGetNewsletterHistoryQuery({ page, limit });
 
-  const { 
+  const {
     data: profileResponse,
     isLoading: isLoadingProfile,
-    error: profileError
-  } = useGetProfileQuery() as { 
-    data: ProfileResponse | undefined; 
-    isLoading: boolean; 
-    error: unknown 
+    error: profileError,
+  } = useGetProfileQuery() as {
+    data: ProfileResponse | undefined;
+    isLoading: boolean;
+    error: unknown;
   };
 
-  console.log('Profile data:', profileResponse); // Pour déboguer
+  console.log("Profile data:", profileResponse); // Pour déboguer
 
   const [updateUsername] = useUpdateUsernameMutation();
   const [updateEmail] = useUpdateEmailMutation();
@@ -86,7 +86,7 @@ const AdminDashboard: React.FC = () => {
       toast.success("Username updated successfully");
     } catch (error) {
       toast.error("Failed to update username");
-      console.error('Update username error:', error);
+      console.error("Update username error:", error);
     }
   };
 
@@ -96,17 +96,20 @@ const AdminDashboard: React.FC = () => {
       toast.success("Email updated successfully");
     } catch (error) {
       toast.error("Failed to update email");
-      console.error('Update email error:', error);
+      console.error("Update email error:", error);
     }
   };
 
-  const handleUpdatePassword = async (currentPassword: string, newPassword: string) => {
+  const handleUpdatePassword = async (
+    currentPassword: string,
+    newPassword: string
+  ) => {
     try {
       await updatePassword({ currentPassword, newPassword }).unwrap();
       toast.success("Password updated successfully");
     } catch (error) {
       toast.error("Failed to update password");
-      console.error('Update password error:', error);
+      console.error("Update password error:", error);
     }
   };
 
@@ -114,38 +117,40 @@ const AdminDashboard: React.FC = () => {
   const handleSendNewsletter = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
     try {
       await sendNewsletter({
-        subject: formData.get('subject') as string,
-        content: formData.get('content') as string,
+        subject: formData.get("subject") as string,
+        content: formData.get("content") as string,
       }).unwrap();
-      
+
       toast.success("Newsletter sent successfully");
       e.currentTarget.reset();
     } catch (error) {
       toast.error("Failed to send newsletter");
-      console.error('Send newsletter error:', error);
+      console.error("Send newsletter error:", error);
     }
   };
 
   // Fonction de tri
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
       setSortField(field);
-      setSortOrder('asc');
+      setSortOrder("asc");
     }
   };
 
   // Fonction pour obtenir les utilisateurs triés
   const getSortedUsers = (users: User[]) => {
     return [...users].sort((a, b) => {
-      const aValue = sortField === 'newsletter' ? a[sortField] : a[sortField].toLowerCase();
-      const bValue = sortField === 'newsletter' ? b[sortField] : b[sortField].toLowerCase();
-      
-      if (sortOrder === 'asc') {
+      const aValue =
+        sortField === "newsletter" ? a[sortField] : a[sortField].toLowerCase();
+      const bValue =
+        sortField === "newsletter" ? b[sortField] : b[sortField].toLowerCase();
+
+      if (sortOrder === "asc") {
         return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
       } else {
         return bValue < aValue ? -1 : bValue > aValue ? 1 : 0;
@@ -158,24 +163,24 @@ const AdminDashboard: React.FC = () => {
     return <div className={styles.loading}>Loading...</div>;
   }
 
-  if (usersError || newsletterError || profileError) {
-    const errorMessage = usersError 
+  // On ne considère plus l'absence de newsletters comme une erreur
+  if (usersError || profileError) {
+    const errorMessage = usersError
       ? "Error loading users"
-      : newsletterError
-      ? "Error loading newsletter history"
       : "Error loading profile";
     return <div className={styles.error}>{errorMessage}</div>;
   }
 
-  // Préparation des données
+  // Préparation des données avec des valeurs par défaut sécurisées
   const newsletters = newsletterHistory?.newsletters || [];
   const totalNewsletters = newsletterHistory?.pagination?.total || 0;
   const totalPages = newsletterHistory?.pagination?.pages || 1;
-  const subscribedUsers = users.filter(user => user.newsletter).length;
+  const subscribedUsers = users.filter((user) => user.newsletter).length;
 
-  const filteredUsers = users.filter((user: User) =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    (user: User) =>
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Composants des onglets
@@ -204,44 +209,84 @@ const AdminDashboard: React.FC = () => {
       <div className={styles.detailsGrid}>
         <div className={styles.detailGroup}>
           <h4>Basic Information</h4>
-          <p><strong>Username:</strong> {user.username}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Role:</strong> {user.role}</p>
-          <p><strong>Newsletter:</strong> {user.newsletter ? "Subscribed" : "Not subscribed"}</p>
-          <p><strong>Joined:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
+          <p>
+            <strong>Username:</strong> {user.username}
+          </p>
+          <p>
+            <strong>Email:</strong> {user.email}
+          </p>
+          <p>
+            <strong>Role:</strong> {user.role}
+          </p>
+          <p>
+            <strong>Newsletter:</strong>{" "}
+            {user.newsletter ? "Subscribed" : "Not subscribed"}
+          </p>
+          <p>
+            <strong>Joined:</strong>{" "}
+            {new Date(user.createdAt).toLocaleDateString()}
+          </p>
         </div>
 
         {user.fullName && (
           <div className={styles.detailGroup}>
             <h4>Full Name</h4>
-            <p><strong>Title:</strong> {user.fullName.honorificTitle || "N/A"}</p>
-            <p><strong>First Name:</strong> {user.fullName.firstName}</p>
-            <p><strong>Father's Name:</strong> {user.fullName.fatherName}</p>
-            <p><strong>Family Name:</strong> {user.fullName.familyName}</p>
-            <p><strong>Gender:</strong> {user.fullName.gender}</p>
+            <p>
+              <strong>Title:</strong> {user.fullName.honorificTitle || "N/A"}
+            </p>
+            <p>
+              <strong>First Name:</strong> {user.fullName.firstName}
+            </p>
+            <p>
+              <strong>Father's Name:</strong> {user.fullName.fatherName}
+            </p>
+            <p>
+              <strong>Family Name:</strong> {user.fullName.familyName}
+            </p>
+            <p>
+              <strong>Gender:</strong> {user.fullName.gender}
+            </p>
           </div>
         )}
 
         {user.address && (
           <div className={styles.detailGroup}>
             <h4>Address</h4>
-            <p><strong>Unit:</strong> {user.address.unit || "N/A"}</p>
-            <p><strong>Building:</strong> {user.address.buildingName || "N/A"}</p>
-            <p><strong>Street:</strong> {user.address.street || "N/A"}</p>
-            <p><strong>Area:</strong> {user.address.dependentLocality || "N/A"}</p>
-            <p><strong>PO Box:</strong> {user.address.poBox || "N/A"}</p>
-            <p><strong>City:</strong> {user.address.city}</p>
-            <p><strong>Emirate:</strong> {user.address.emirate}</p>
+            <p>
+              <strong>Unit:</strong> {user.address.unit || "N/A"}
+            </p>
+            <p>
+              <strong>Building:</strong> {user.address.buildingName || "N/A"}
+            </p>
+            <p>
+              <strong>Street:</strong> {user.address.street || "N/A"}
+            </p>
+            <p>
+              <strong>Area:</strong> {user.address.dependentLocality || "N/A"}
+            </p>
+            <p>
+              <strong>PO Box:</strong> {user.address.poBox || "N/A"}
+            </p>
+            <p>
+              <strong>City:</strong> {user.address.city}
+            </p>
+            <p>
+              <strong>Emirate:</strong> {user.address.emirate}
+            </p>
           </div>
         )}
 
         <div className={styles.detailGroup}>
           <h4>Contact</h4>
-          <p><strong>Mobile:</strong> {user.mobilePhone || "N/A"}</p>
-          <p><strong>Landline:</strong> {user.landline || "N/A"}</p>
+          <p>
+            <strong>Mobile:</strong> {user.mobilePhone || "N/A"}
+          </p>
+          <p>
+            <strong>Landline:</strong> {user.landline || "N/A"}
+          </p>
         </div>
       </div>
-      <button 
+      <button
         onClick={() => setSelectedUser(null)}
         className={styles.closeButton}
       >
@@ -252,102 +297,120 @@ const AdminDashboard: React.FC = () => {
 
   const renderUsersTab = () => {
     const sortedAndFilteredUsers = getSortedUsers(filteredUsers);
-    
-    return (
-    <div className={styles.usersTab}>
-      <div className={styles.searchBar}>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search by name or email..."
-          className={styles.searchInput}
-        />
-      </div>
-      
-      <div className={styles.tableContainer}>
-        <table className={styles.usersTable}>
-          <thead>
-            <tr>
-              <th onClick={() => handleSort('username')} className={styles.sortableHeader}>
-                Username
-                {sortField === 'username' && (
-                  <span className={styles.sortIcon}>
-                    {sortOrder === 'asc' ? ' ↑' : ' ↓'}
-                  </span>
-                )}
-              </th>
-              <th onClick={() => handleSort('email')} className={styles.sortableHeader}>
-                Email
-                {sortField === 'email' && (
-                  <span className={styles.sortIcon}>
-                    {sortOrder === 'asc' ? ' ↑' : ' ↓'}
-                  </span>
-                )}
-              </th>
-              <th onClick={() => handleSort('newsletter')} className={styles.sortableHeader}>
-                Newsletter
-                {sortField === 'newsletter' && (
-                  <span className={styles.sortIcon}>
-                    {sortOrder === 'asc' ? ' ↑' : ' ↓'}
-                  </span>
-                )}
-              </th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedAndFilteredUsers.map((user: User) => (
-              <tr key={user.id}>
-                <td data-label="Username">{user.username}</td>
-                <td data-label="Email">{user.email}</td>
-                <td data-label="Newsletter">
-                  <span className={user.newsletter ? styles.subscribed : styles.notSubscribed}>
-                    {user.newsletter ? "Subscribed" : "Not subscribed"}
-                  </span>
-                </td>
-                <td data-label="Actions">
-                  <button
-                    onClick={() => setSelectedUser(user)}
-                    className={styles.detailsButton}
-                  >
-                    View Details
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
 
-      {selectedUser && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            {renderUserDetails(selectedUser)}
-          </div>
+    return (
+      <div className={styles.usersTab}>
+        <div className={styles.searchBar}>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by name or email..."
+            className={styles.searchInput}
+          />
         </div>
-      )}
-    </div>
-  );
+
+        <div className={styles.tableContainer}>
+          <table className={styles.usersTable}>
+            <thead>
+              <tr>
+                <th
+                  onClick={() => handleSort("username")}
+                  className={styles.sortableHeader}
+                >
+                  Username
+                  {sortField === "username" && (
+                    <span className={styles.sortIcon}>
+                      {sortOrder === "asc" ? " ↑" : " ↓"}
+                    </span>
+                  )}
+                </th>
+                <th
+                  onClick={() => handleSort("email")}
+                  className={styles.sortableHeader}
+                >
+                  Email
+                  {sortField === "email" && (
+                    <span className={styles.sortIcon}>
+                      {sortOrder === "asc" ? " ↑" : " ↓"}
+                    </span>
+                  )}
+                </th>
+                <th
+                  onClick={() => handleSort("newsletter")}
+                  className={styles.sortableHeader}
+                >
+                  Newsletter
+                  {sortField === "newsletter" && (
+                    <span className={styles.sortIcon}>
+                      {sortOrder === "asc" ? " ↑" : " ↓"}
+                    </span>
+                  )}
+                </th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedAndFilteredUsers.map((user: User) => (
+                <tr key={user.id}>
+                  <td data-label="Username">{user.username}</td>
+                  <td data-label="Email">{user.email}</td>
+                  <td data-label="Newsletter">
+                    <span
+                      className={
+                        user.newsletter
+                          ? styles.subscribed
+                          : styles.notSubscribed
+                      }
+                    >
+                      {user.newsletter ? "Subscribed" : "Not subscribed"}
+                    </span>
+                  </td>
+                  <td data-label="Actions">
+                    <button
+                      onClick={() => setSelectedUser(user)}
+                      className={styles.detailsButton}
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {selectedUser && (
+          <div className={styles.modal}>
+            <div className={styles.modalContent}>
+              {renderUserDetails(selectedUser)}
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   // Composant Modal d'édition
-  const EditModal = ({ 
-    isOpen, 
-    onClose, 
-    title, 
-    children 
-  }: { 
-    isOpen: boolean; 
-    onClose: () => void; 
-    title: string; 
-    children: React.ReactNode 
+  const EditModal = ({
+    isOpen,
+    onClose,
+    title,
+    children,
+  }: {
+    isOpen: boolean;
+    onClose: () => void;
+    title: string;
+    children: React.ReactNode;
   }) => {
     if (!isOpen) return null;
 
     return (
       <div className={styles.modal} onClick={onClose}>
-        <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+        <div
+          className={styles.modalContent}
+          onClick={(e) => e.stopPropagation()}
+        >
           <h3>{title}</h3>
           {children}
         </div>
@@ -358,19 +421,19 @@ const AdminDashboard: React.FC = () => {
   // Composant de formulaire de mot de passe
   const PasswordForm = ({
     onSubmit,
-    onCancel
+    onCancel,
   }: {
-    onSubmit: (currentPassword: string, newPassword: string) => Promise<void>,
-    onCancel: () => void
+    onSubmit: (currentPassword: string, newPassword: string) => Promise<void>;
+    onCancel: () => void;
   }) => {
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       await onSubmit(currentPassword, newPassword);
-      setCurrentPassword('');
-      setNewPassword('');
+      setCurrentPassword("");
+      setNewPassword("");
     };
 
     return (
@@ -401,8 +464,8 @@ const AdminDashboard: React.FC = () => {
           />
         </div>
         <div className={styles.modalActions}>
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={onCancel}
             className={styles.cancelButton}
           >
@@ -433,7 +496,7 @@ const AdminDashboard: React.FC = () => {
                   <label>Username</label>
                   <div className={styles.infoValue}>
                     <span>{profileResponse.data.username}</span>
-                    <button 
+                    <button
                       onClick={() => {
                         setNewUsername(profileResponse.data.username);
                         setIsEditingUsername(true);
@@ -449,7 +512,7 @@ const AdminDashboard: React.FC = () => {
                   <label>Email</label>
                   <div className={styles.infoValue}>
                     <span>{profileResponse.data.email}</span>
-                    <button 
+                    <button
                       onClick={() => {
                         setNewEmail(profileResponse.data.email);
                         setIsEditingEmail(true);
@@ -464,7 +527,9 @@ const AdminDashboard: React.FC = () => {
                 <div className={styles.infoItem}>
                   <label>Role</label>
                   <div className={styles.infoValue}>
-                    <span className={styles.roleTag}>{profileResponse.data.role}</span>
+                    <span className={styles.roleTag}>
+                      {profileResponse.data.role}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -473,7 +538,7 @@ const AdminDashboard: React.FC = () => {
             <div className={styles.profileSection}>
               <h4>Security</h4>
               <div className={styles.infoGroup}>
-                <button 
+                <button
                   onClick={() => setIsEditingPassword(true)}
                   className={`${styles.editButton} ${styles.securityButton}`}
                 >
@@ -489,11 +554,14 @@ const AdminDashboard: React.FC = () => {
             onClose={() => setIsEditingUsername(false)}
             title="Edit Username"
           >
-            <form onSubmit={async (e) => {
-              e.preventDefault();
-              await handleUpdateUsername(newUsername);
-              setIsEditingUsername(false);
-            }} className={styles.editForm}>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                await handleUpdateUsername(newUsername);
+                setIsEditingUsername(false);
+              }}
+              className={styles.editForm}
+            >
               <div className={styles.formGroup}>
                 <label htmlFor="username">New Username</label>
                 <input
@@ -507,7 +575,11 @@ const AdminDashboard: React.FC = () => {
                 />
               </div>
               <div className={styles.modalActions}>
-                <button type="button" onClick={() => setIsEditingUsername(false)} className={styles.cancelButton}>
+                <button
+                  type="button"
+                  onClick={() => setIsEditingUsername(false)}
+                  className={styles.cancelButton}
+                >
                   Cancel
                 </button>
                 <button type="submit" className={styles.submitButton}>
@@ -523,11 +595,14 @@ const AdminDashboard: React.FC = () => {
             onClose={() => setIsEditingEmail(false)}
             title="Edit Email"
           >
-            <form onSubmit={async (e) => {
-              e.preventDefault();
-              await handleUpdateEmail(newEmail);
-              setIsEditingEmail(false);
-            }} className={styles.editForm}>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                await handleUpdateEmail(newEmail);
+                setIsEditingEmail(false);
+              }}
+              className={styles.editForm}
+            >
               <div className={styles.formGroup}>
                 <label htmlFor="email">New Email</label>
                 <input
@@ -540,7 +615,11 @@ const AdminDashboard: React.FC = () => {
                 />
               </div>
               <div className={styles.modalActions}>
-                <button type="button" onClick={() => setIsEditingEmail(false)} className={styles.cancelButton}>
+                <button
+                  type="button"
+                  onClick={() => setIsEditingEmail(false)}
+                  className={styles.cancelButton}
+                >
                   Cancel
                 </button>
                 <button type="submit" className={styles.submitButton}>
@@ -601,7 +680,9 @@ const AdminDashboard: React.FC = () => {
                 <div key={newsletter.id} className={styles.newsletterCard}>
                   <h4>{newsletter.subject}</h4>
                   <p>Sent by: {newsletter.sentBy?.username || "Unknown"}</p>
-                  <p>Date: {new Date(newsletter.sentAt).toLocaleDateString()}</p>
+                  <p>
+                    Date: {new Date(newsletter.sentAt).toLocaleDateString()}
+                  </p>
                   <p>Recipients: {newsletter.recipientCount}</p>
                 </div>
               ))}
@@ -610,15 +691,17 @@ const AdminDashboard: React.FC = () => {
             {totalPages > 1 && (
               <div className={styles.pagination}>
                 <button
-                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
                   className={styles.pageButton}
                 >
                   Previous
                 </button>
-                <span>Page {page} of {totalPages}</span>
+                <span>
+                  Page {page} of {totalPages}
+                </span>
                 <button
-                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
                   className={styles.pageButton}
                 >
@@ -636,16 +719,16 @@ const AdminDashboard: React.FC = () => {
 
   const OrientationBanner = () => (
     <div className={styles.orientationBanner}>
-      <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c-4.97 0-9-4.03-9-9m9 9a9 9 0 009-9m-9 9c4.97 0 9-4.03 9-9"/>
+        <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c-4.97 0-9-4.03-9-9m9 9a9 9 0 009-9m-9 9c4.97 0 9-4.03 9-9" />
       </svg>
       For a better experience, please rotate your device to landscape mode
     </div>
@@ -664,9 +747,9 @@ const AdminDashboard: React.FC = () => {
           { id: "overview", label: "Overview" },
           { id: "users", label: "Users" },
           { id: "newsletter", label: "Newsletter" },
-          { id: "profile", label: "My Profile" }
-        ].map(tab => (
-          <button 
+          { id: "profile", label: "My Profile" },
+        ].map((tab) => (
+          <button
             key={tab.id}
             className={activeTab === tab.id ? styles.active : ""}
             onClick={() => setActiveTab(tab.id as TabType)}
@@ -686,4 +769,4 @@ const AdminDashboard: React.FC = () => {
   );
 };
 
-export default AdminDashboard; 
+export default AdminDashboard;
