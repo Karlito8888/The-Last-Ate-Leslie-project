@@ -1,11 +1,11 @@
-import { BaseEntity, createExtendedApi } from './baseApi';
+import { BaseEntity, createExtendedApi } from "./baseApi";
 
 interface IUserName {
   honorificTitle?: string;
   firstName?: string;
   fatherName?: string;
   familyName?: string;
-  gender?: 'male' | 'female';
+  gender?: "male" | "female";
 }
 
 interface IAddress {
@@ -66,55 +66,59 @@ interface ApiResponse<T> {
 }
 
 export const profileApi = createExtendedApi({
-  reducerPath: 'profileApi',
+  reducerPath: "profileApi",
   endpoints: (builder) => ({
-    getProfile: builder.query<ApiResponse<User>, void>({
-      query: () => '/users/profile',
-      providesTags: ['Profile'],
+    getProfile: builder.query<User, void>({
+      query: () => "/users/profile",
+      transformResponse: (response: ApiResponse<User>) => {
+        if (!response.data) throw new Error("No profile data");
+        return response.data;
+      },
+      providesTags: ["Profile"],
     }),
     updateProfile: builder.mutation<ApiResponse<User>, ProfileUpdateData>({
       query: (profileData) => ({
-        url: '/users/profile',
-        method: 'PUT',
+        url: "/users/profile",
+        method: "PUT",
         body: profileData,
       }),
-      invalidatesTags: ['Profile'],
+      invalidatesTags: ["Profile"],
     }),
     updateUsername: builder.mutation<User, UsernameUpdateRequest>({
       query: (data) => ({
-        url: '/users/profile/username',
-        method: 'PUT',
+        url: "/users/profile/username",
+        method: "PUT",
         body: data,
       }),
-      invalidatesTags: ['Profile'],
+      invalidatesTags: ["Profile"],
     }),
     updateEmail: builder.mutation<User, EmailUpdateRequest>({
       query: (data) => ({
-        url: '/users/profile/email',
-        method: 'PUT',
+        url: "/users/profile/email",
+        method: "PUT",
         body: data,
       }),
-      invalidatesTags: ['Profile'],
+      invalidatesTags: ["Profile"],
     }),
     updateNewsletter: builder.mutation<User, boolean>({
       query: (newsletter) => ({
-        url: '/users/profile/newsletter',
-        method: 'PUT',
+        url: "/users/profile/newsletter",
+        method: "PUT",
         body: { newsletter },
       }),
-      invalidatesTags: ['Profile'],
+      invalidatesTags: ["Profile"],
     }),
     changePassword: builder.mutation<void, PasswordChangeRequest>({
       query: (passwordData) => ({
-        url: '/users/profile/password',
-        method: 'PUT',
+        url: "/users/profile/password",
+        method: "PUT",
         body: passwordData,
       }),
     }),
     deleteProfile: builder.mutation<void, DeleteProfileRequest>({
       query: (data) => ({
-        url: '/users/profile',
-        method: 'DELETE',
+        url: "/users/profile",
+        method: "DELETE",
         body: data,
       }),
     }),
@@ -129,4 +133,4 @@ export const {
   useUpdateNewsletterMutation,
   useChangePasswordMutation,
   useDeleteProfileMutation,
-} = profileApi; 
+} = profileApi;

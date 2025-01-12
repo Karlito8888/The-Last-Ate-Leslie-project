@@ -1,28 +1,30 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { logout } from '../../store/slices/authSlice'
-import { 
-  useGetProfileQuery, 
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/slices/authSlice";
+import {
+  useGetProfileQuery,
   useUpdateProfileMutation,
   useUpdateUsernameMutation,
-  useUpdateEmailMutation, 
+  useUpdateEmailMutation,
   useUpdateNewsletterMutation,
-  useDeleteProfileMutation
-} from '../../store/api/profileApi'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import styles from './Profile.module.scss'
+  useDeleteProfileMutation,
+} from "../../store/api/profileApi";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import styles from "./Profile.module.scss";
 
 // Fonctions de validation
 const isValidNamePart = (name: string): boolean => {
   const MIN_LENGTH = 2;
   const MAX_LENGTH = 50;
   const ALLOWED_CHARS = /^[a-zA-Z\s\-']+$/;
-  
-  return name.length >= MIN_LENGTH && 
-         name.length <= MAX_LENGTH && 
-         ALLOWED_CHARS.test(name);
+
+  return (
+    name.length >= MIN_LENGTH &&
+    name.length <= MAX_LENGTH &&
+    ALLOWED_CHARS.test(name)
+  );
 };
 
 const isValidMobilePhone = (phone: string): boolean => {
@@ -37,20 +39,25 @@ const isValidLandline = (phone: string): boolean => {
 
 const isValidAddress = (address: IAddress): boolean => {
   if (!address) return true;
-  
+
   // Validation des longueurs
   if (address.unit && address.unit.length > 50) return false;
   if (address.buildingName && address.buildingName.length > 100) return false;
   if (address.street && address.street.length > 100) return false;
-  if (address.dependentLocality && address.dependentLocality.length > 100) return false;
+  if (address.dependentLocality && address.dependentLocality.length > 100)
+    return false;
   if (address.city && address.city.length > 50) return false;
-  
+
   // Validation du PO Box (numérique uniquement)
   if (address.poBox && !/^[0-9]{1,10}$/.test(address.poBox)) return false;
-  
+
   // Validation de l'émirat
-  if (address.emirate && !['AD', 'DU', 'SH', 'AJ', 'UAQ', 'RAK', 'FJR'].includes(address.emirate)) return false;
-  
+  if (
+    address.emirate &&
+    !["AD", "DU", "SH", "AJ", "UAQ", "RAK", "FJR"].includes(address.emirate)
+  )
+    return false;
+
   return true;
 };
 
@@ -64,7 +71,7 @@ interface IUserName {
   firstName?: string;
   fatherName?: string;
   familyName?: string;
-  gender?: 'male' | 'female';
+  gender?: "male" | "female";
 }
 
 interface IAddress {
@@ -89,125 +96,151 @@ interface UserInfo {
 }
 
 const Profile: React.FC = () => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const { 
-    data: userData, 
-    isLoading: isLoadingProfile, 
-    error: profileError 
-  } = useGetProfileQuery()
-  
-  console.log('État du profil:', {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {
+    data: userData,
     isLoading: isLoadingProfile,
     error: profileError,
-    hasData: !!userData
+  } = useGetProfileQuery();
+
+  // Logs détaillés pour le debugging
+  console.log("🔍 État complet du profil:", {
+    userData,
+    isLoadingProfile,
+    profileError,
   });
 
-  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
-  const [updateUsername, { isLoading: isUpdatingUsername }] = useUpdateUsernameMutation()
-  const [updateEmail, { isLoading: isUpdatingEmail }] = useUpdateEmailMutation()
-  const [updateNewsletter] = useUpdateNewsletterMutation()
-  const [deleteProfile, { isLoading: isDeleting }] = useDeleteProfileMutation()
+  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+  const [updateUsername, { isLoading: isUpdatingUsername }] =
+    useUpdateUsernameMutation();
+  const [updateEmail, { isLoading: isUpdatingEmail }] =
+    useUpdateEmailMutation();
+  const [updateNewsletter] = useUpdateNewsletterMutation();
+  const [deleteProfile, { isLoading: isDeleting }] = useDeleteProfileMutation();
 
-  const [deleteConfirmation, setDeleteConfirmation] = useState(false)
-  const [deletePassword, setDeletePassword] = useState('')
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    username: '',
-    email: '',
-    mobilePhone: '',
-    landline: '',
+    username: "",
+    email: "",
+    mobilePhone: "",
+    landline: "",
     newsletter: false,
     fullName: {
-      honorificTitle: '',
-      firstName: '',
-      fatherName: '',
-      familyName: '',
-      gender: undefined
+      honorificTitle: "",
+      firstName: "",
+      fatherName: "",
+      familyName: "",
+      gender: undefined,
     },
-    birthDate: '',
+    birthDate: "",
     address: {
-      unit: '',
-      buildingName: '',
-      street: '',
-      dependentLocality: '',
-      poBox: '',
-      city: '',
-      emirate: undefined
-    }
-  })
+      unit: "",
+      buildingName: "",
+      street: "",
+      dependentLocality: "",
+      poBox: "",
+      city: "",
+      emirate: undefined,
+    },
+  });
 
   // Ajout des états pour le focus des champs de téléphone
   const [isMobilePhoneFocused, setIsMobilePhoneFocused] = useState(false);
   const [isLandlineFocused, setIsLandlineFocused] = useState(false);
 
   useEffect(() => {
-    if (userData?.data) {
-      console.log('Données reçues de l\'API:', userData);
-      setUserInfo(prevState => ({
-        ...prevState,
-        username: userData.data.username,
-        email: userData.data.email,
-        newsletter: userData.data.newsletter ?? false,
-        mobilePhone: userData.data.mobilePhone || '',
-        landline: userData.data.landline || '',
-        fullName: {
-          ...prevState.fullName,
-          ...userData.data.fullName
-        },
-        birthDate: userData.data.birthDate || '',
-        address: {
-          ...prevState.address,
-          ...userData.data.address
-        }
-      }));
+    console.log("🔄 useEffect déclenché avec userData:", userData);
+
+    if (userData) {
+      console.log("📥 Données brutes reçues:", userData);
+      console.log("📋 Structure de fullName:", userData.fullName);
+      console.log("🏠 Structure de address:", userData.address);
+
+      setUserInfo((prevState) => {
+        const newState = {
+          ...prevState,
+          username: userData.username,
+          email: userData.email,
+          newsletter: userData.newsletter ?? false,
+          mobilePhone: userData.mobilePhone || "",
+          landline: userData.landline || "",
+          fullName: {
+            honorificTitle: userData.fullName?.honorificTitle || "",
+            firstName: userData.fullName?.firstName || "",
+            fatherName: userData.fullName?.fatherName || "",
+            familyName: userData.fullName?.familyName || "",
+            gender: userData.fullName?.gender,
+          },
+          birthDate: userData.birthDate || "",
+          address: {
+            unit: userData.address?.unit || "",
+            buildingName: userData.address?.buildingName || "",
+            street: userData.address?.street || "",
+            dependentLocality: userData.address?.dependentLocality || "",
+            poBox: userData.address?.poBox || "",
+            city: userData.address?.city || "",
+            emirate: userData.address?.emirate || "",
+          },
+        };
+
+        console.log("📤 Nouveau state calculé:", newState);
+        return newState;
+      });
+    } else {
+      console.log("⚠️ Pas de données dans userData");
     }
   }, [userData]);
 
   const handleUserInfoChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value, type } = e.target
-    const checked = (e.target as HTMLInputElement).checked
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
 
     // Gestion des champs imbriqués (fullName et address)
-    if (name.startsWith('fullName.')) {
-      const field = name.split('.')[1]
-      setUserInfo(prev => ({
+    if (name.startsWith("fullName.")) {
+      const field = name.split(".")[1];
+      setUserInfo((prev) => ({
         ...prev,
         fullName: {
           ...prev.fullName,
-          [field]: value
-        }
-      }))
-    } else if (name.startsWith('address.')) {
-      const field = name.split('.')[1]
-      setUserInfo(prev => ({
+          [field]: value,
+        },
+      }));
+    } else if (name.startsWith("address.")) {
+      const field = name.split(".")[1];
+      setUserInfo((prev) => ({
         ...prev,
         address: {
           ...prev.address,
-          [field]: value
-        }
-      }))
+          [field]: value,
+        },
+      }));
     } else {
       // Gestion des champs de premier niveau
-      setUserInfo(prev => ({
+      setUserInfo((prev) => ({
         ...prev,
-        [name]: type === 'checkbox' ? checked : value
-      }))
+        [name]: type === "checkbox" ? checked : value,
+      }));
     }
-  }
+  };
 
   const handleUserInfoSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     // Fonction utilitaire pour nettoyer les objets
     const cleanObject = (obj: any) => {
       const cleaned: any = {};
-      Object.keys(obj).forEach(key => {
-        if (obj[key] !== undefined && obj[key] !== '' && 
-            (typeof obj[key] !== 'object' || Object.keys(obj[key]).length > 0)) {
-          if (typeof obj[key] === 'object') {
+      Object.keys(obj).forEach((key) => {
+        if (
+          obj[key] !== undefined &&
+          obj[key] !== "" &&
+          (typeof obj[key] !== "object" || Object.keys(obj[key]).length > 0)
+        ) {
+          if (typeof obj[key] === "object") {
             const cleanedNested = cleanObject(obj[key]);
             if (Object.keys(cleanedNested).length > 0) {
               cleaned[key] = cleanedNested;
@@ -219,45 +252,54 @@ const Profile: React.FC = () => {
       });
       return cleaned;
     };
-    
+
     // Validation du nom complet
     if (userInfo.fullName) {
-      if (userInfo.fullName.firstName && !isValidNamePart(userInfo.fullName.firstName)) {
-        toast.error('Format de prénom invalide');
+      if (
+        userInfo.fullName.firstName &&
+        !isValidNamePart(userInfo.fullName.firstName)
+      ) {
+        toast.error("Format de prénom invalide");
         return;
       }
-      if (userInfo.fullName.familyName && !isValidNamePart(userInfo.fullName.familyName)) {
-        toast.error('Format de nom de famille invalide');
+      if (
+        userInfo.fullName.familyName &&
+        !isValidNamePart(userInfo.fullName.familyName)
+      ) {
+        toast.error("Format de nom de famille invalide");
         return;
       }
-      if (userInfo.fullName.fatherName && !isValidNamePart(userInfo.fullName.fatherName)) {
-        toast.error('Format de nom du père invalide');
+      if (
+        userInfo.fullName.fatherName &&
+        !isValidNamePart(userInfo.fullName.fatherName)
+      ) {
+        toast.error("Format de nom du père invalide");
         return;
       }
     }
 
     // Validation des numéros de téléphone
     if (userInfo.mobilePhone && !isValidMobilePhone(userInfo.mobilePhone)) {
-      toast.error('Format de numéro de mobile invalide (+971-5X-XXXXXXX)');
+      toast.error("Format de numéro de mobile invalide (+971-5X-XXXXXXX)");
       return;
     }
     if (userInfo.landline && !isValidLandline(userInfo.landline)) {
-      toast.error('Format de numéro fixe invalide (+971-X-XXXXXXX)');
+      toast.error("Format de numéro fixe invalide (+971-X-XXXXXXX)");
       return;
     }
 
     // Validation de l'adresse
     if (userInfo.address && !isValidAddress(userInfo.address)) {
-      toast.error('Format d\'adresse invalide');
+      toast.error("Format d'adresse invalide");
       return;
     }
 
     // Validation de la date de naissance
     if (userInfo.birthDate && !isValidDate(userInfo.birthDate)) {
-      toast.error('Format de date de naissance invalide');
+      toast.error("Format de date de naissance invalide");
       return;
     }
-    
+
     // Préparer les données à envoyer en nettoyant les valeurs vides et undefined
     const rawData = {
       fullName: userInfo.fullName,
@@ -265,116 +307,118 @@ const Profile: React.FC = () => {
       mobilePhone: userInfo.mobilePhone,
       landline: userInfo.landline,
       address: userInfo.address,
-      newsletter: userInfo.newsletter
+      newsletter: userInfo.newsletter,
     };
 
     const profileData = cleanObject(rawData);
-    
-    console.log('Données nettoyées à envoyer:', profileData);
-    
-    try {
-      const response = await updateProfile(profileData).unwrap()
-      console.log('Réponse du serveur:', response);
-      toast.success('Profile updated successfully')
-    } catch (err: any) {
-      console.error('Failed to update profile:', err)
-      const errorMessage = err.data?.message || 'Failed to update profile'
-      toast.error(errorMessage)
-    }
-  }
 
-  const handleNewsletterChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.checked
+    console.log("Données nettoyées à envoyer:", profileData);
+
     try {
-      await updateNewsletter(newValue).unwrap()
-      setUserInfo(prev => ({ ...prev, newsletter: newValue }))
-      toast.success('Newsletter preference updated successfully')
-    } catch (err) {
-      console.error('Failed to update newsletter preference:', err)
-      toast.error('Failed to update newsletter preference')
-      // Revert the checkbox state on error
-      setUserInfo(prev => ({ ...prev, newsletter: !newValue }))
+      const response = await updateProfile(profileData).unwrap();
+      console.log("Réponse du serveur:", response);
+      toast.success("Profile updated successfully");
+    } catch (err: any) {
+      console.error("Failed to update profile:", err);
+      const errorMessage = err.data?.message || "Failed to update profile";
+      toast.error(errorMessage);
     }
-  }
+  };
+
+  const handleNewsletterChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newValue = e.target.checked;
+    try {
+      await updateNewsletter(newValue).unwrap();
+      setUserInfo((prev) => ({ ...prev, newsletter: newValue }));
+      toast.success("Newsletter preference updated successfully");
+    } catch (err) {
+      console.error("Failed to update newsletter preference:", err);
+      toast.error("Failed to update newsletter preference");
+      // Revert the checkbox state on error
+      setUserInfo((prev) => ({ ...prev, newsletter: !newValue }));
+    }
+  };
 
   const handleUsernameSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      await updateUsername({ username: userInfo.username }).unwrap()
-      toast.success('Username updated successfully')
+      await updateUsername({ username: userInfo.username }).unwrap();
+      toast.success("Username updated successfully");
     } catch (err) {
-      console.error('Failed to update username:', err)
-      toast.error('Failed to update username')
+      console.error("Failed to update username:", err);
+      toast.error("Failed to update username");
     }
-  }
+  };
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      await updateEmail({ email: userInfo.email }).unwrap()
-      toast.success('Email updated successfully')
+      await updateEmail({ email: userInfo.email }).unwrap();
+      toast.success("Email updated successfully");
     } catch (err) {
-      console.error('Failed to update email:', err)
-      toast.error('Failed to update email')
+      console.error("Failed to update email:", err);
+      toast.error("Failed to update email");
     }
-  }
+  };
 
   const handleDeleteAccount = async () => {
     if (!deletePassword) {
-      toast.error('Please enter your password to delete your account')
-      return
+      toast.error("Please enter your password to delete your account");
+      return;
     }
 
     try {
-      await deleteProfile({ password: deletePassword }).unwrap()
-      
+      await deleteProfile({ password: deletePassword }).unwrap();
+
       // Créer une promesse pour gérer la redirection de manière synchrone
       await new Promise<void>((resolve) => {
         // Nettoyer l'authentification
-        dispatch(logout())
-        localStorage.removeItem('token')
-        
+        dispatch(logout());
+        localStorage.removeItem("token");
+
         // Attendre un court instant pour s'assurer que le state est mis à jour
         setTimeout(() => {
-          navigate('/')
-          toast.success('Account deleted successfully')
-          resolve()
-        }, 100)
-      })
+          navigate("/");
+          toast.success("Account deleted successfully");
+          resolve();
+        }, 100);
+      });
     } catch (err) {
-      console.error('Failed to delete account:', err)
-      toast.error('Failed to delete account')
+      console.error("Failed to delete account:", err);
+      toast.error("Failed to delete account");
     }
-  }
+  };
 
   // Empêcher la soumission du formulaire avec la touche Entrée
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
+    if (e.key === "Enter") {
+      e.preventDefault();
     }
-  }
+  };
 
   if (isLoadingProfile) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   if (profileError) {
-    return <div>Error loading profile</div>
+    return <div>Error loading profile</div>;
   }
 
   return (
     <div className={styles.profileContainer}>
-      <form 
-        onSubmit={handleUserInfoSubmit} 
+      <form
+        onSubmit={handleUserInfoSubmit}
         className={styles.profileForm}
         onKeyDown={handleKeyDown}
       >
         <h2>Profile Information</h2>
-        
+
         {/* Basic Information */}
         <div className={styles.section}>
           <h3>Basic Information</h3>
-          
+
           {/* Username with separate submit */}
           <div className={styles.formGroupWithButton}>
             <div className={styles.inputWrapper}>
@@ -393,7 +437,7 @@ const Profile: React.FC = () => {
               disabled={isUpdatingUsername}
               className={styles.updateButton}
             >
-              {isUpdatingUsername ? 'Updating...' : 'Update Username'}
+              {isUpdatingUsername ? "Updating..." : "Update Username"}
             </button>
           </div>
 
@@ -415,7 +459,7 @@ const Profile: React.FC = () => {
               disabled={isUpdatingEmail}
               className={styles.updateButton}
             >
-              {isUpdatingEmail ? 'Updating...' : 'Update Email'}
+              {isUpdatingEmail ? "Updating..." : "Update Email"}
             </button>
           </div>
         </div>
@@ -426,7 +470,7 @@ const Profile: React.FC = () => {
           <div className={styles.formGroup}>
             <select
               name="fullName.honorificTitle"
-              value={userInfo.fullName?.honorificTitle || ''}
+              value={userInfo.fullName?.honorificTitle || ""}
               onChange={handleUserInfoChange}
             >
               <option value="">Select Title</option>
@@ -440,7 +484,7 @@ const Profile: React.FC = () => {
             <input
               type="text"
               name="fullName.firstName"
-              value={userInfo.fullName?.firstName || ''}
+              value={userInfo.fullName?.firstName || ""}
               onChange={handleUserInfoChange}
               placeholder="First Name"
             />
@@ -451,7 +495,7 @@ const Profile: React.FC = () => {
             <input
               type="text"
               name="fullName.fatherName"
-              value={userInfo.fullName?.fatherName || ''}
+              value={userInfo.fullName?.fatherName || ""}
               onChange={handleUserInfoChange}
               placeholder="Father's Name"
             />
@@ -462,7 +506,7 @@ const Profile: React.FC = () => {
             <input
               type="text"
               name="fullName.familyName"
-              value={userInfo.fullName?.familyName || ''}
+              value={userInfo.fullName?.familyName || ""}
               onChange={handleUserInfoChange}
               placeholder="Family Name"
             />
@@ -472,7 +516,7 @@ const Profile: React.FC = () => {
           <div className={styles.formGroup}>
             <select
               name="fullName.gender"
-              value={userInfo.fullName?.gender || ''}
+              value={userInfo.fullName?.gender || ""}
               onChange={handleUserInfoChange}
             >
               <option value="">Select Gender</option>
@@ -497,9 +541,7 @@ const Profile: React.FC = () => {
             />
             <label className={styles.floatingLabel}>Mobile Phone</label>
             {isMobilePhoneFocused && (
-              <span className={styles.helpText}>
-                (e.g. +971-50-1234567)
-              </span>
+              <span className={styles.helpText}>(e.g. +971-50-1234567)</span>
             )}
           </div>
 
@@ -515,9 +557,7 @@ const Profile: React.FC = () => {
             />
             <label className={styles.floatingLabel}>Landline</label>
             {isLandlineFocused && (
-              <span className={styles.helpText}>
-                (e.g. +971-4-1234567)
-              </span>
+              <span className={styles.helpText}>(e.g. +971-4-1234567)</span>
             )}
           </div>
         </div>
@@ -529,7 +569,7 @@ const Profile: React.FC = () => {
             <input
               type="text"
               name="address.unit"
-              value={userInfo.address?.unit || ''}
+              value={userInfo.address?.unit || ""}
               onChange={handleUserInfoChange}
               placeholder="Unit"
             />
@@ -540,7 +580,7 @@ const Profile: React.FC = () => {
             <input
               type="text"
               name="address.buildingName"
-              value={userInfo.address?.buildingName || ''}
+              value={userInfo.address?.buildingName || ""}
               onChange={handleUserInfoChange}
               placeholder="Building Name"
             />
@@ -551,7 +591,7 @@ const Profile: React.FC = () => {
             <input
               type="text"
               name="address.street"
-              value={userInfo.address?.street || ''}
+              value={userInfo.address?.street || ""}
               onChange={handleUserInfoChange}
               placeholder="Street"
             />
@@ -562,7 +602,7 @@ const Profile: React.FC = () => {
             <input
               type="text"
               name="address.dependentLocality"
-              value={userInfo.address?.dependentLocality || ''}
+              value={userInfo.address?.dependentLocality || ""}
               onChange={handleUserInfoChange}
               placeholder="Area/District"
             />
@@ -573,7 +613,7 @@ const Profile: React.FC = () => {
             <input
               type="text"
               name="address.poBox"
-              value={userInfo.address?.poBox || ''}
+              value={userInfo.address?.poBox || ""}
               onChange={handleUserInfoChange}
               placeholder="P.O. Box"
             />
@@ -584,7 +624,7 @@ const Profile: React.FC = () => {
             <input
               type="text"
               name="address.city"
-              value={userInfo.address?.city || ''}
+              value={userInfo.address?.city || ""}
               onChange={handleUserInfoChange}
               placeholder="City"
             />
@@ -594,7 +634,7 @@ const Profile: React.FC = () => {
           <div className={styles.formGroup}>
             <select
               name="address.emirate"
-              value={userInfo.address?.emirate || ''}
+              value={userInfo.address?.emirate || ""}
               onChange={handleUserInfoChange}
             >
               <option value="">Select Emirate</option>
@@ -622,12 +662,12 @@ const Profile: React.FC = () => {
           </label>
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className={styles.submitButton}
           disabled={isUpdating}
         >
-          {isUpdating ? 'Updating...' : 'Update Profile'}
+          {isUpdating ? "Updating..." : "Update Profile"}
         </button>
       </form>
 
@@ -658,13 +698,13 @@ const Profile: React.FC = () => {
                 disabled={isDeleting}
                 className={styles.confirmDeleteButton}
               >
-                {isDeleting ? 'Deleting...' : 'Confirm Delete'}
+                {isDeleting ? "Deleting..." : "Confirm Delete"}
               </button>
               <button
                 type="button"
                 onClick={() => {
-                  setDeleteConfirmation(false)
-                  setDeletePassword('')
+                  setDeleteConfirmation(false);
+                  setDeletePassword("");
                 }}
                 className={styles.cancelButton}
               >
@@ -675,7 +715,7 @@ const Profile: React.FC = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Profile 
+export default Profile;
