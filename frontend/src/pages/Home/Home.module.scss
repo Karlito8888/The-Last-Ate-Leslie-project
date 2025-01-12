@@ -9,15 +9,15 @@
   padding-left: clamp(1rem, 0.5rem + 3vw, 3rem);
   padding-right: clamp(1rem, 0.5rem + 3vw, 3rem);
   z-index: 1;
-  
+
   &::before {
-    content: '';
+    content: "";
     position: fixed;
     top: 0;
     right: 0;
     width: 50%;
     height: 100vh;
-    background: 
+    background:
       linear-gradient(
         to right,
         rgba($color-white, 1) 0%,
@@ -25,16 +25,19 @@
         rgba($color-white, 0.5) 100%
       ),
       image-set(
-        url('../../assets/images/home/city-792148_1920.webp') type('image/webp'),
-        url('../../assets/images/home/city-792148_1920.jpg') type('image/jpeg')
-      ) right center/cover no-repeat;
+          url("../../assets/images/home/city-792148_1920.webp")
+            type("image/webp"),
+          url("../../assets/images/home/city-792148_1920.jpg")
+            type("image/jpeg")
+        )
+        right center/cover no-repeat;
     z-index: -1;
     transition: all 0.3s ease-in-out;
     pointer-events: none;
-    
+
     @media (max-width: 1280px) {
       width: 60%;
-      background: 
+      background:
         linear-gradient(
           to right,
           rgba($color-white, 1) 0%,
@@ -42,14 +45,17 @@
           rgba($color-white, 0.6) 100%
         ),
         image-set(
-          url('../../assets/images/home/city-792148_1280.webp') type('image/webp'),
-          url('../../assets/images/home/city-792148_1280.jpg') type('image/jpeg')
-        ) right center/cover no-repeat;
+            url("../../assets/images/home/city-792148_1280.webp")
+              type("image/webp"),
+            url("../../assets/images/home/city-792148_1280.jpg")
+              type("image/jpeg")
+          )
+          right center/cover no-repeat;
     }
-    
+
     @media (max-width: 640px) {
       width: 100%;
-      background: 
+      background:
         linear-gradient(
           135deg,
           rgba($color-white, 0.98) 0%,
@@ -59,9 +65,12 @@
           rgba($color-white, 0.65) 100%
         ),
         image-set(
-          url('../../assets/images/home/city-792148_640.webp') type('image/webp'),
-          url('../../assets/images/home/city-792148_640.jpg') type('image/jpeg')
-        ) center/cover no-repeat;
+            url("../../assets/images/home/city-792148_640.webp")
+              type("image/webp"),
+            url("../../assets/images/home/city-792148_640.jpg")
+              type("image/jpeg")
+          )
+          center/cover no-repeat;
       opacity: 1;
     }
   }
@@ -79,7 +88,7 @@
     margin-bottom: clamp(3rem, 2rem + 3vw, 5rem);
     position: relative;
     z-index: 2;
-    
+
     h3 {
       font-size: clamp(2rem, 1.5rem + 3vw, 4rem);
       color: $color-primary;
@@ -87,7 +96,7 @@
       font-weight: 300;
       letter-spacing: 2px;
       line-height: 1.2;
-      
+
       span {
         display: inline-block;
         word-wrap: break-word;
@@ -99,9 +108,9 @@
       width: 100%;
       margin: 2rem auto;
       position: relative;
-      
+
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         inset: 0;
         background: linear-gradient(
@@ -129,17 +138,17 @@
     .tagline {
       border-left: none;
       font-style: italic;
-      
+
       p {
         font-size: clamp(1.2rem, 1rem + 1vw, 2rem);
         color: rgba($color-black, 0.9);
         margin: 0;
         position: relative;
         display: inline-block;
-        
+
         &::before,
         &::after {
-          content: '';
+          content: "";
           position: absolute;
           height: 1px;
           width: clamp(2rem, 1.5rem + 3vw, 4rem);
@@ -167,6 +176,7 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    margin-bottom: clamp(1.5rem, 1rem + 2vw, 3rem);
 
     p {
       font-size: clamp(1rem, 0.9rem + 0.5vw, 1.2rem);
@@ -232,7 +242,7 @@
       gap: 2rem;
       margin-bottom: 3rem;
       grid-template-columns: 1fr;
-      
+
       @media (min-width: 1024px) {
         grid-template-columns: repeat(3, 1fr);
       }
