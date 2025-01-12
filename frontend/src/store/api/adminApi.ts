@@ -1,6 +1,11 @@
-import { BaseEntity, createExtendedApi, ApiResponse } from './baseApi';
+import {
+  BaseEntity,
+  createExtendedApi,
+  ApiResponse,
+  TagTypes,
+} from "./baseApi";
 
-export type MessageStatus = 'new' | 'assigned' | 'in_progress' | 'resolved';
+export type MessageStatus = "new" | "assigned" | "in_progress" | "resolved";
 
 export interface Message extends BaseEntity {
   name: string;
@@ -12,7 +17,7 @@ export interface Message extends BaseEntity {
 }
 
 export interface Admin extends User {
-  role: 'admin';
+  role: "admin";
 }
 
 export interface User extends BaseEntity {
@@ -25,7 +30,7 @@ export interface User extends BaseEntity {
     firstName: string;
     fatherName: string;
     familyName: string;
-    gender: 'male' | 'female';
+    gender: "male" | "female";
   };
   birthDate?: string;
   mobilePhone?: string;
@@ -70,98 +75,115 @@ export interface PaginationParams {
 }
 
 export const adminApi = createExtendedApi({
-  reducerPath: 'adminApi',
+  reducerPath: "adminApi",
   endpoints: (builder) => ({
     // Gestion des utilisateurs
     getUsers: builder.query<User[], void>({
-      query: () => '/admin/users',
+      query: () => "/admin/users",
       transformResponse: (response: ApiResponse<User[]>) => response.data || [],
-      providesTags: ['AdminUsers'],
+      providesTags: [{ type: "AdminUsers" }],
+      extraOptions: {
+        refetchOnMount: true,
+        refetchOnReconnect: true,
+      },
     }),
 
     // Gestion du profil admin (utilise les routes user)
     getProfile: builder.query<User, void>({
-      query: () => '/users/profile',
+      query: () => "/users/profile",
       transformResponse: (response: ApiResponse<User>) => {
-        if (!response.data) throw new Error('No profile data');
+        if (!response.data) throw new Error("No profile data");
         return response.data;
       },
-      providesTags: ['AdminProfile'],
+      providesTags: [{ type: "AdminProfile" }],
+      extraOptions: {
+        refetchOnMount: true,
+        refetchOnReconnect: true,
+      },
     }),
     updateProfile: builder.mutation<User, Partial<User>>({
       query: (data) => ({
-        url: '/users/profile',
-        method: 'PUT',
+        url: "/users/profile",
+        method: "PUT",
         body: data,
       }),
       transformResponse: (response: ApiResponse<User>) => {
-        if (!response.data) throw new Error('No profile data');
+        if (!response.data) throw new Error("No profile data");
         return response.data;
       },
-      invalidatesTags: ['AdminProfile'],
+      invalidatesTags: [{ type: "AdminProfile" }],
     }),
     updateUsername: builder.mutation<User, { username: string }>({
       query: (data) => ({
-        url: '/users/profile/username',
-        method: 'PUT',
+        url: "/users/profile/username",
+        method: "PUT",
         body: data,
       }),
       transformResponse: (response: ApiResponse<User>) => {
-        if (!response.data) throw new Error('No profile data');
+        if (!response.data) throw new Error("No profile data");
         return response.data;
       },
-      invalidatesTags: ['AdminProfile'],
+      invalidatesTags: [{ type: "AdminProfile" }],
     }),
     updateEmail: builder.mutation<User, { email: string }>({
       query: (data) => ({
-        url: '/users/profile/email',
-        method: 'PUT',
+        url: "/users/profile/email",
+        method: "PUT",
         body: data,
       }),
       transformResponse: (response: ApiResponse<User>) => {
-        if (!response.data) throw new Error('No profile data');
+        if (!response.data) throw new Error("No profile data");
         return response.data;
       },
-      invalidatesTags: ['AdminProfile'],
+      invalidatesTags: [{ type: "AdminProfile" }],
     }),
-    updatePassword: builder.mutation<void, { currentPassword: string; newPassword: string }>({
+    updatePassword: builder.mutation<
+      void,
+      { currentPassword: string; newPassword: string }
+    >({
       query: (data) => ({
-        url: '/users/profile/password',
-        method: 'PUT',
+        url: "/users/profile/password",
+        method: "PUT",
         body: data,
       }),
     }),
     deleteProfile: builder.mutation<void, void>({
       query: () => ({
-        url: '/users/profile',
-        method: 'DELETE',
+        url: "/users/profile",
+        method: "DELETE",
       }),
-      invalidatesTags: ['AdminProfile'],
+      invalidatesTags: [{ type: "AdminProfile" }],
     }),
 
     // Gestion de la newsletter
-    sendNewsletter: builder.mutation<{ recipientCount: number }, NewsletterInput>({
+    sendNewsletter: builder.mutation<
+      { recipientCount: number },
+      NewsletterInput
+    >({
       query: (data) => ({
-        url: '/admin/newsletter',
-        method: 'POST',
+        url: "/admin/newsletter",
+        method: "POST",
         body: data,
       }),
-      transformResponse: (response: ApiResponse<{ recipientCount: number }>) => {
-        if (!response.data) throw new Error('No newsletter data');
+      transformResponse: (
+        response: ApiResponse<{ recipientCount: number }>
+      ) => {
+        if (!response.data) throw new Error("No newsletter data");
         return response.data;
       },
-      invalidatesTags: ['NewsletterHistory'],
+      invalidatesTags: [{ type: "NewsletterHistory" }],
     }),
-    getNewsletterHistory: builder.query<NewsletterHistoryResponse, PaginationParams>({
-      query: (params) => ({
-        url: '/admin/newsletter/history',
-        params,
-      }),
+    getNewsletterHistory: builder.query<
+      NewsletterHistoryResponse,
+      { page: number; limit: number }
+    >({
+      query: ({ page, limit }) =>
+        `/admin/newsletter/history?page=${page}&limit=${limit}`,
       transformResponse: (response: ApiResponse<NewsletterHistoryResponse>) => {
-        if (!response.data) throw new Error('No newsletter history data');
+        if (!response.data) throw new Error("No newsletter history data");
         return response.data;
       },
-      providesTags: ['NewsletterHistory'],
+      providesTags: [{ type: "NewsletterHistory" }],
     }),
   }),
 });
@@ -176,4 +198,4 @@ export const {
   useDeleteProfileMutation,
   useSendNewsletterMutation,
   useGetNewsletterHistoryQuery,
-} = adminApi; 
+} = adminApi;

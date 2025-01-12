@@ -1,92 +1,104 @@
-import { createApi, fetchBaseQuery, EndpointBuilder, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import { RootState } from '../store'
-import { logout } from '../slices/authSlice'
+import {
+  createApi,
+  fetchBaseQuery,
+  EndpointBuilder,
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from "@reduxjs/toolkit/query/react";
+import { RootState } from "../store";
+import { logout } from "../slices/authSlice";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 // Types communs
 export interface BaseEntity {
-  id: string
-  createdAt: string
-  updatedAt?: string
+  id: string;
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export interface ApiResponse<T> {
-  success: boolean
-  data?: T
-  message?: string
-  error?: string
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
 }
 
 // Tags communs
-export type TagTypes = 
-  | 'Auth'
-  | 'Profile'
-  | 'AdminUsers'
-  | 'AdminProfile'
-  | 'NewsletterHistory'
-  | 'Contact'
-  | 'Events'
-  | 'Reviews'
+export type TagTypes =
+  | "Auth"
+  | "Profile"
+  | "AdminUsers"
+  | "AdminProfile"
+  | "NewsletterHistory"
+  | "Contact"
+  | "Events"
+  | "Reviews";
 
 // Création d'une baseQuery avec gestion du token expiré
 const baseQuery = fetchBaseQuery({
-  baseUrl: API_URL + '/api',
-  credentials: 'include',
+  baseUrl: API_URL + "/api",
+  credentials: "include",
   prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.token
+    const token = (getState() as RootState).auth.token;
     if (token) {
-      headers.set('authorization', `Bearer ${token}`)
+      headers.set("authorization", `Bearer ${token}`);
     }
-    return headers
+    return headers;
   },
-})
+});
 
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  const result = await baseQuery(args, api, extraOptions)
-  
+  const result = await baseQuery(args, api, extraOptions);
+
   // Si le token est expiré (401), on déconnecte l'utilisateur
   if (result.error && result.error.status === 401) {
-    api.dispatch(logout())
+    api.dispatch(logout());
   }
-  
-  return result
-}
+
+  return result;
+};
 
 // Configuration de base pour toutes les APIs
 export const baseApi = createApi({
-  reducerPath: 'api',
+  reducerPath: "api",
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
   tagTypes: [
-    'Auth',
-    'Profile',
-    'AdminUsers',
-    'AdminProfile',
-    'NewsletterHistory',
-    'Contact',
-    'Events',
-    'Reviews',
+    "Auth",
+    "Profile",
+    "AdminUsers",
+    "AdminProfile",
+    "NewsletterHistory",
+    "Contact",
+    "Events",
+    "Reviews",
   ],
-})
+  // Réinitialiser tout le cache lors de la déconnexion
+  keepUnusedDataFor: 300, // 5 minutes
+  refetchOnMountOrArgChange: true, // Recharger les données au montage
+  refetchOnFocus: true, // Recharger les données quand la fenêtre reprend le focus
+  refetchOnReconnect: true, // Recharger les données à la reconnexion
+});
 
 // Helper pour créer une API étendue
-export const createExtendedApi = <T extends Record<string, any>>(
-  config: {
-    reducerPath: string
-    endpoints: (builder: EndpointBuilder<
+export const createExtendedApi = <T extends Record<string, any>>(config: {
+  reducerPath: string;
+  endpoints: (
+    builder: EndpointBuilder<
       BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
       TagTypes,
       string
-    >) => T
-  }
-) => {
+    >
+  ) => T;
+}) => {
   return baseApi.injectEndpoints({
     endpoints: config.endpoints,
-    overrideExisting: false,
-  })
-}
+    overrideExisting: true, // Forcer la mise à jour des endpoints
+  });
+};
