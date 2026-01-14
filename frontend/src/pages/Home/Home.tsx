@@ -45,23 +45,47 @@ const Home: React.FC = () => {
         <h3>Our Services</h3>
         <div className={styles.servicesGrid}>
           <div className={styles.serviceCard}>
-            <img src={kiosk} alt="Indoor & Outdoor Kiosk" className={styles.serviceImage} />
+            <img
+              src={kiosk}
+              alt="Indoor & Outdoor Kiosk"
+              className={styles.serviceImage}
+              loading="lazy"
+              width="400"
+              height="200"
+              decoding="async"
+            />
             <h4>Indoor & Outdoor Kiosk</h4>
             <p>Bespoke solutions with comprehensive design process, from concept to execution.</p>
           </div>
           <div className={styles.serviceCard}>
-            <img src={exhibition} alt="Exhibition Standard" className={styles.serviceImage} />
+            <img
+              src={exhibition}
+              alt="Exhibition Standard"
+              className={styles.serviceImage}
+              loading="lazy"
+              width="400"
+              height="200"
+              decoding="async"
+            />
             <h4>Exhibition Standard</h4>
             <p>Custom exhibition booth designs that showcase your corporate identity.</p>
           </div>
           <div className={styles.serviceCard}>
-            <img src={gifts} alt="Corporate Gift Items" className={styles.serviceImage} />
+            <img
+              src={gifts}
+              alt="Corporate Gift Items"
+              className={styles.serviceImage}
+              loading="lazy"
+              width="400"
+              height="200"
+              decoding="async"
+            />
             <h4>Corporate Gift Items</h4>
             <p>Wide selection of corporate gifts that perfectly represent your brand.</p>
           </div>
         </div>
-        <Link to="/services" className={styles.seeMoreButton}>
-          See More
+        <Link to="/services" className={styles.seeMoreButton} aria-label="View all our services">
+          Discover all services
         </Link>
       </section>
 
@@ -83,8 +107,8 @@ const Home: React.FC = () => {
             <p>Seamless execution of corporate events that leave lasting impressions.</p>
           </div>
         </div>
-        <Link to="/portfolio" className={styles.seeMoreButton}>
-          See More
+        <Link to="/portfolio" className={styles.seeMoreButton} aria-label="View our complete portfolio">
+          Explore our portfolio
         </Link>
       </section>
 

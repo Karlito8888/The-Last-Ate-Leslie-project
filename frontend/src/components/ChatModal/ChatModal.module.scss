@@ -31,8 +31,9 @@
     justify-content: center;
     width: 3.5rem;
     height: 3.5rem;
-    background: linear-gradient(135deg, #C6A355 0%, #AD8A3B 100%);
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
     color: $color-white;
+    border: none;
     border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -53,7 +54,12 @@
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
       animation: none;
-      background: linear-gradient(135deg, #AD8A3B 0%, #C6A355 100%);
+      background: linear-gradient(135deg, $color-primary-dark 0%, $color-primary 100%);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
     }
 
     svg {
@@ -93,7 +99,7 @@
     }
 
     .chatHeader {
-      background: linear-gradient(135deg, #C6A355 0%, #AD8A3B 100%);
+      background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
       color: $color-white;
       padding: 1rem;
       display: flex;
@@ -150,7 +156,7 @@
     .successMessage {
       padding: 2rem 1.5rem;
       text-align: center;
-      background: linear-gradient(135deg, #C6A355 0%, #AD8A3B);
+      background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -202,7 +208,7 @@
         textarea {
           width: 100%;
           padding: 0.75rem;
-          border: 1px solid rgba(198, 163, 85, 0.2);
+          border: 1px solid rgba($color-primary, 0.2);
           border-radius: 0.25rem;
           font-family: inherit;
           font-size: 0.9rem;
@@ -215,8 +221,8 @@
 
           &:focus {
             outline: none;
-            border-color: #C6A355;
-            box-shadow: 0 0 0 2px rgba(198, 163, 85, 0.1);
+            border-color: $color-primary;
+            box-shadow: 0 0 0 2px rgba($color-primary, 0.1);
           }
 
           &::placeholder {

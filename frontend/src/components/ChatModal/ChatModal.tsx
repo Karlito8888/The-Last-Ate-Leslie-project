@@ -110,13 +110,14 @@ const ChatModal: React.FC = () => {
   return (
     <div className={styles.chatModal}>
       {!isExpanded && (
-        <div 
+        <button
+          type="button"
           className={styles.chatButton}
           onClick={() => setIsExpanded(true)}
-          aria-label="Contact us"
+          aria-label="Open contact form"
         >
           <TiMessages />
-        </div>
+        </button>
       )}
 
       {isExpanded && (

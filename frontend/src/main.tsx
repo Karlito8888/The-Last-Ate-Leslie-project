@@ -1,20 +1,29 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { store } from './store/store.ts'
 import App from './App'
 import Home from './pages/Home/Home'
-import RegisterForm from './components/auth/RegisterForm'
-import Login from './components/auth/Login'
-import Services from './pages/Services/Services'
-import Portfolio from './pages/Portfolio/Portfolio'
-import About from './pages/About/About'
-import Contact from './pages/Contact/Contact'
-import Profile from './pages/Profile/Profile'
-import AdminDashboard from './pages/AdminDashboard/AdminDashboard'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 import './styles/main.scss'
+
+// Lazy load non-critical pages for better initial load performance
+const RegisterForm = lazy(() => import('./components/auth/RegisterForm'))
+const Login = lazy(() => import('./components/auth/Login'))
+const Services = lazy(() => import('./pages/Services/Services'))
+const Portfolio = lazy(() => import('./pages/Portfolio/Portfolio'))
+const About = lazy(() => import('./pages/About/About'))
+const Contact = lazy(() => import('./pages/Contact/Contact'))
+const Profile = lazy(() => import('./pages/Profile/Profile'))
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard/AdminDashboard'))
+
+// Loading fallback component
+const PageLoader = () => (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+    <div style={{ color: '#7A5C10', fontSize: '1rem' }}>Loading...</div>
+  </div>
+)
 
 const router = createBrowserRouter([
   {
@@ -27,33 +36,33 @@ const router = createBrowserRouter([
       },
       {
         path: '/auth/register',
-        element: <RegisterForm />,
+        element: <Suspense fallback={<PageLoader />}><RegisterForm /></Suspense>,
       },
       {
         path: '/auth/login',
-        element: <Login />,
+        element: <Suspense fallback={<PageLoader />}><Login /></Suspense>,
       },
       {
         path: '/services',
-        element: <Services />,
+        element: <Suspense fallback={<PageLoader />}><Services /></Suspense>,
       },
       {
         path: '/portfolio',
-        element: <Portfolio />,
+        element: <Suspense fallback={<PageLoader />}><Portfolio /></Suspense>,
       },
       {
         path: '/about',
-        element: <About />,
+        element: <Suspense fallback={<PageLoader />}><About /></Suspense>,
       },
       {
         path: '/contact',
-        element: <Contact />,
+        element: <Suspense fallback={<PageLoader />}><Contact /></Suspense>,
       },
       {
         path: '/profile',
         element: (
           <ProtectedRoute>
-            <Profile />
+            <Suspense fallback={<PageLoader />}><Profile /></Suspense>
           </ProtectedRoute>
         ),
       },
@@ -61,7 +70,7 @@ const router = createBrowserRouter([
         path: '/admin',
         element: (
           <ProtectedRoute requiredRole="admin">
-            <AdminDashboard />
+            <Suspense fallback={<PageLoader />}><AdminDashboard /></Suspense>
           </ProtectedRoute>
         ),
       },
